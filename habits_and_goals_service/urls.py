@@ -21,4 +21,3 @@ urlpatterns = [
     path('', include("tracker.urls"))
 ]
 
-app_name = "tracker"
