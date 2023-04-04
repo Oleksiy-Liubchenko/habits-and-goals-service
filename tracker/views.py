@@ -1,5 +1,14 @@
 from django.shortcuts import render
+from django.urls import reverse_lazy
 from django.views import generic
+
+from tracker.models import (
+    Goal,
+    GoalStage,
+    Habit,
+    Note,
+    Commentary,
+)
 
 
 def index(request, pk):
@@ -7,11 +16,16 @@ def index(request, pk):
 
 
 class GoalListView(generic.ListView):
-    pass
+    model = Goal
+    template_name = "goal/goal_list.html"
+    context_object_name = "goal_list"
 
 
 class GoalCreateView(generic.CreateView):
-    pass
+    model = Goal
+    fields = "__all__"
+    template_name = "goal/goal_form.html"
+    success_url = reverse_lazy("tracker:goal-list")
 
 
 class GoalDetailView(generic.DetailView):
