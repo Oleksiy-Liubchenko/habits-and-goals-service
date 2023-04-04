@@ -1,0 +1,11 @@
+{% extends "base.html" %}
+
+{% block content%}
+  <h1>Goal detail</h1>
+    <br>
+  <h1>Name</h1>{{ goal.name }}
+  <h3>deadline</h3>{{ goal.deadline }}
+  <h3>description</h3>{{ goal.description }}
+  <h3>created at</h3>{{ goal.created_at }}
+
+{% endblock %}

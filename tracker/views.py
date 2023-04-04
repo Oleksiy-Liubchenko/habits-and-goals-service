@@ -22,12 +22,6 @@ class GoalListView(generic.ListView):
     model = Goal
     template_name = "goal/goal_list.html"
     context_object_name = "goal_list"
-    # widgets = {
-    #     'deadline': widgets.DateInput(
-    #         attrs={'type': 'datetime-local'},
-    #         format='%Y-%m-%dT%H:%M'
-    #     )
-    # }
 
 
 class GoalCreateView(LoginRequiredMixin, generic.CreateView):
@@ -40,15 +34,10 @@ class GoalCreateView(LoginRequiredMixin, generic.CreateView):
         form.instance.user = self.request.user
         return super().form_valid(form)
 
-    # widgets = {
-    #     'deadline': widgets.DateInput(
-    #         attrs={'type': 'datetime-local'},
-    #         format='%Y-%m-%dT%H:%M'
-    #     )
-    # }
 
 class GoalDetailView(generic.DetailView):
-    pass
+    model = Goal
+    template_name = "goal/goal_detail.html"
 
 
 class GoalStageCreateView(generic.CreateView):

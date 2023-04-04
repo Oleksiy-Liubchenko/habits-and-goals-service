@@ -9,7 +9,11 @@
   <ul>
   <h1>Goals:</h1>
   {% for goal in goal_list %}
-      <li>name: {{ goal.name }}</li>
+      <li>
+        <a href="{% url "tracker:goal-detail" pk=goal.id %}">
+          name: {{ goal.name }}
+        </a>
+      </li>
       description: {{ goal.description }}
         <br>
       deadline: {{ goal.deadline.date }}
