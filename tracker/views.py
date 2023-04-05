@@ -94,7 +94,7 @@ class NoteCreateView(generic.CreateView):
 class CommentaryGoalCreateView(LoginRequiredMixin, generic.CreateView):
     model = Commentary
     form_class = GoalCommentaryForm
-    template_name = "commentary_form.html"
+    template_name = "goal/goal_commentary_form.html"
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
