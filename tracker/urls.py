@@ -30,7 +30,7 @@ urlpatterns = [
     ),
     # add update view. do not forget
     path(
-        "goals/create/stage/",
+        "goals/<int:goal_id>/create/stage/",
         GoalStageCreateView.as_view(),
         name="goal-create-stage"
     ),
