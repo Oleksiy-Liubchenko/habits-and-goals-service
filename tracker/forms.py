@@ -1,6 +1,6 @@
 from django import forms
 from django.forms import widgets
-from tracker.models import Goal, GoalStage
+from tracker.models import Goal, GoalStage, Commentary
 from django.forms.widgets import DateInput
 
 
@@ -20,3 +20,10 @@ class GoalCreationStageForm(forms.ModelForm):
         widgets = {
             'deadline': DateInput(attrs={'type': 'date'})
         }
+
+
+# GoalCommentaryForm
+class GoalCommentaryForm(forms.ModelForm):
+    class Meta:
+        model = Commentary
+        fields = ["text"]

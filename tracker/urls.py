@@ -8,7 +8,7 @@ from tracker.views import (
     HabitCreateView,
     HabitDetailView,
     NoteCreateView,
-    CommentaryCreateView
+    CommentaryGoalCreateView
 )
 
 
@@ -60,14 +60,14 @@ urlpatterns = [
         NoteCreateView.as_view(),
         name="goal-note-create"
     ),
-    path(
-        "habits/<int:pk>/create/commentary/",
-        CommentaryCreateView.as_view(),
-        name="habit-commentary-create"
-    ),
+    # path(
+    #     "habits/<int:pk>/create/commentary/",
+    #     CommentaryCreateView.as_view(),
+    #     name="habit-commentary-create"
+    # ),
     path(
         "goals/<int:pk>/create/commentary/",
-        CommentaryCreateView.as_view(),
+        CommentaryGoalCreateView.as_view(),
         name="goal-commentary-create"
     ),
 ]

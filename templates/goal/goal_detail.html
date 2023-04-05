@@ -22,7 +22,21 @@
     stage_deadline = {{ stage.deadline.date }}
     <br>
     stage_created_at = {{ stage.created_at }}
-
   {% endfor %}
+    <br><br>
+    <a href="{% url "tracker:goal-commentary-create" pk=goal.id%}">
+        Create commentary
+    </a>
+  <br>
+      Comment zone:
+    <ul>
+    {% for comment in goal_commentaries %}
+      <li>
+        <h2>{{ comment.text }}</h2>
+        (Comment by: {{ comment.user }} at {{ comment.created_at.time }} {{ comment.created_at.date }})
+      </li>
+    {% empty %}
+      <p>No comments yet.</p>
+    {% endfor %}
   </ul>
 {% endblock %}

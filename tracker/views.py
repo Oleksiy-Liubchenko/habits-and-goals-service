@@ -1,10 +1,11 @@
 from django.contrib.auth.mixins import LoginRequiredMixin
+from django.http import HttpResponseRedirect
 from django.shortcuts import render
 from django.urls import reverse_lazy, reverse
 from django.views import generic
 from django.forms import widgets
 
-from tracker.forms import GoalCreationForm, GoalCreationStageForm
+from tracker.forms import GoalCreationForm, GoalCreationStageForm, GoalCommentaryForm
 from tracker.models import (
     Goal,
     GoalStage,
@@ -42,6 +43,7 @@ class GoalDetailView(generic.DetailView):
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         context['goal_stages'] = self.object.stages.all()
+        context['goal_commentaries'] = self.object.commentaries.all()
         return context
 
 
@@ -75,5 +77,28 @@ class NoteCreateView(generic.CreateView):
     pass
 
 
-class CommentaryCreateView(generic.CreateView):
+class CommentaryGoalCreateView(LoginRequiredMixin, generic.CreateView):
+    model = Commentary
+    form_class = GoalCommentaryForm
+    template_name = "commentary_form.html"
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context["goal_id"] = self.kwargs["pk"]
+        return context
+
+    def form_valid(self, form):
+        goal = Goal.objects.get(pk=self.kwargs["pk"])
+        commentary = form.save(commit=False)
+        commentary.user = self.request.user
+        commentary.save()
+        commentary.goals.add(goal)
+        commentary.save()
+        return super().form_valid(form)
+
+    def get_success_url(self):
+        return reverse("tracker:goal-detail", kwargs={"pk": self.kwargs["pk"]})
+
+
+class CommentaryHabitCreateView(generic.CreateView):
     pass
