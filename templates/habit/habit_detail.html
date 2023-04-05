@@ -1,0 +1,30 @@
+{% extends "base.html" %}
+
+{% block content%}
+  <h1>Habit detail</h1>
+
+  <br>
+
+  <h1>{{ habit.name }}</h1>
+  <h3>start - {{ habit.created_at }}</h3>
+  <h3>description:</h3>{{ habit.description }}
+  <h3>month goal: {{ habit.month_goal }}</h3>
+{#  if month goal achive than next month goal or goal year goal #}
+  <br>
+    <br><br>
+    <a href="{% url "tracker:habit-commentary-create" pk=habit.id%}">
+        Create commentary
+    </a>
+  <br>
+      Comment zone:
+    <ul>
+    {% for comment in habit_commentaries %}
+      <li>
+        <h2>{{ comment.text }}</h2>
+        (Comment by: {{ comment.user }} at {{ comment.created_at.time }} {{ comment.created_at.date }})
+      </li>
+    {% empty %}
+      <p>No comments yet.</p>
+    {% endfor %}
+  </ul>
+{% endblock %}

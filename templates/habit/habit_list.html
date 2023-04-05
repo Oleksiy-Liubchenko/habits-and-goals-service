@@ -1,0 +1,21 @@
+{% extends "base.html" %}
+
+{% block content%}
+  <h1>Goal_list</h1>
+  <a href="{% url 'tracker:habit-create' %}">
+    Create
+  </a>
+    <br>
+  <ul>
+  <h1>Habits:</h1>
+  {% for habit in habit_list %}
+      <li>
+        <a href="{% url "tracker:habit-detail" pk=habit.id %}">
+          name: {{ habit.name }}
+        </a>
+      </li>
+      description: {{ habit.description }}
+    <br>
+  {% endfor %}
+  </ul>
+{% endblock %}

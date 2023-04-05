@@ -5,7 +5,8 @@ from django.urls import reverse_lazy, reverse
 from django.views import generic
 from django.forms import widgets
 
-from tracker.forms import GoalCreationForm, GoalCreationStageForm, GoalCommentaryForm
+from tracker.forms import GoalCreationForm, GoalCreationStageForm, GoalCommentaryForm, HabitCreationForm, \
+    HabitCommentaryForm
 from tracker.models import (
     Goal,
     GoalStage,
@@ -50,7 +51,6 @@ class GoalDetailView(generic.DetailView):
 class GoalStageCreateView(generic.CreateView):
     model = GoalStage
     form_class = GoalCreationStageForm
-    #success_url = reverse_lazy("tracker:goal-detail")
     template_name = "goal/goalstage_form.html"
 
     def form_valid(self, form):
@@ -62,15 +62,29 @@ class GoalStageCreateView(generic.CreateView):
 
 
 class HabitListView(generic.ListView):
-    pass
+    model = Habit
+    template_name = "habit/habit_list.html"
 
 
 class HabitCreateView(generic.CreateView):
-    pass
+    model = Habit
+    template_name = "habit/habit_form.html"
+    success_url = reverse_lazy("tracker:habit-list")
+    form_class = HabitCreationForm
+
+    def form_valid(self, form):
+        form.instance.user = self.request.user
+        return super().form_valid(form)
 
 
 class HabitDetailView(generic.DetailView):
-    pass
+    model = Habit
+    template_name = "habit/habit_detail.html"
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context["habit_commentaries"] = self.object.commentaries.all()
+        return context
 
 
 class NoteCreateView(generic.CreateView):
@@ -101,4 +115,23 @@ class CommentaryGoalCreateView(LoginRequiredMixin, generic.CreateView):
 
 
 class CommentaryHabitCreateView(generic.CreateView):
-    pass
+    model = Commentary
+    form_class = HabitCommentaryForm
+    template_name = "habit/habit_commentary_form.html"
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context["habit_id"] = self.kwargs["pk"]
+        return context
+
+    def form_valid(self, form):
+        habit = Habit.objects.get(pk=self.kwargs["pk"])
+        commentary = form.save(commit=False)
+        commentary.user = self.request.user
+        commentary.save()
+        commentary.habits.add(habit)
+        commentary.save()
+        return super().form_valid(form)
+
+    def get_success_url(self):
+        return reverse("tracker:habit-detail", kwargs={"pk": self.kwargs["pk"]})
