@@ -13,6 +13,18 @@ class Goal(models.Model):
     deadline = models.DateTimeField()
     created_at = models.DateTimeField(auto_now_add=True)
 
+    STATUS_CHOICES = [
+        ("active", "Active"),
+        ("completed", "Completed"),
+        ("abandoned", "Abandoned")
+    ]
+
+    status = models.CharField(
+        max_length=20,
+        choices=STATUS_CHOICES,
+        default="active"
+    )
+
 
 class GoalStage(models.Model):
     goal = models.ForeignKey(Goal, on_delete=models.CASCADE, related_name='stages')
