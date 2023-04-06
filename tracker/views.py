@@ -29,6 +29,21 @@ class GoalListView(generic.ListView):
     paginate_by = 5
 
 
+class GoalDeleteView(generic.DeleteView):
+    model = Goal
+    template_name = "goal/goal_confirm_delete.html"
+    success_url = reverse_lazy("tracker:goal-list")
+
+
+class GoalUpdateView(generic.UpdateView):
+    model = Goal
+    fields = "__all__"
+    template_name = "goal/goal_form.html"
+
+    def get_success_url(self):
+        return reverse("tracker:goal-detail", kwargs={"pk": self.kwargs["pk"]})
+
+
 class GoalCreateView(LoginRequiredMixin, generic.CreateView):
     model = Goal
     template_name = "goal/goal_form.html"

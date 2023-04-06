@@ -6,6 +6,14 @@
   <br>
 
   <h1>{{ goal.name }}</h1>
+  <a href="{% url "tracker:goal-update" pk=goal.id %}" class="btn btn-secondary">
+    Update
+  </a>
+  <a href="{% url "tracker:goal-delete" pk=goal.id %}" class="btn btn-danger">
+    Delete
+  </a>
+
+
   <h3>deadline:</h3>{{ goal.deadline }}
   <h3>description:</h3>{{ goal.description }}
   <br>
