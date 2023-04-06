@@ -24,6 +24,7 @@ class GoalListView(generic.ListView):
     model = Goal
     template_name = "goal/goal_list.html"
     context_object_name = "goal_list"
+    paginate_by = 5
 
 
 class GoalCreateView(LoginRequiredMixin, generic.CreateView):
@@ -64,6 +65,7 @@ class GoalStageCreateView(generic.CreateView):
 class HabitListView(generic.ListView):
     model = Habit
     template_name = "habit/habit_list.html"
+    paginate_by = 5
 
 
 class HabitCreateView(generic.CreateView):
