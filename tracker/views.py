@@ -16,8 +16,10 @@ from tracker.models import (
 )
 
 
-def index(request, pk):
-    pass
+def index(request):
+    context = {}
+
+    return render(request, "index.html", context=context)
 
 
 class GoalListView(generic.ListView):

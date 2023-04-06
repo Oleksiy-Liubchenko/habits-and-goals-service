@@ -8,11 +8,16 @@ from tracker.views import (
     HabitCreateView,
     HabitDetailView,
     NoteCreateView,
-    CommentaryGoalCreateView, CommentaryHabitCreateView
+    CommentaryGoalCreateView, CommentaryHabitCreateView, index
 )
 
 
 urlpatterns = [
+    path(
+        "",
+        index,
+        name="index"
+    ),
     path(
         "goals/",
         GoalListView.as_view(),
