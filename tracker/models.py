@@ -54,6 +54,23 @@ class Habit(models.Model):
     created_at = models.DateTimeField(auto_now_add=True)
 
 
+class HabitDayCompletion(models.Model):
+    STATUS_CHOICE = [
+        ("completed", "Competed"),
+        ("not_completed", "Not Competed")
+    ]
+
+    user = models.ForeignKey(User, on_delete=models.CASCADE, related_name='habit_completions')
+    habit = models.ForeignKey(Habit, on_delete=models.CASCADE, related_name='habit_completions')
+
+    complete_date = models.DateField()
+    status = models.CharField(
+        max_length=13,
+        choices=STATUS_CHOICE,
+        default="not_completed"
+    )
+
+
 class Note(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE, related_name='notes')
     text = models.TextField()
