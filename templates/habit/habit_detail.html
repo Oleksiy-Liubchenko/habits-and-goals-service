@@ -6,9 +6,18 @@
   <br>
 
   <h1>{{ habit.name }}</h1>
-  <h3>start - {{ habit.created_at }}</h3>
-  <h3>description:</h3>{{ habit.description }}
-  <h3>month goal: {{ habit.month_goal }}</h3>
+  (start - {{ habit.created_at }})
+  <h4>description:</h4>{{ habit.description }}
+  <h3>month goal:</h3> {{ habit.month_goal }}
+  <br>
+  Did you do your task today?
+  <a href="" class="btn btn-success">
+    Yes
+  </a>
+  <a href="" class="btn btn-danger">
+    No
+  </a>
+
 {#  if month goal achive than next month goal or goal year goal #}
   <br>
     <br><br>
