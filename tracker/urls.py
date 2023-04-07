@@ -12,7 +12,9 @@ from tracker.views import (
     CommentaryHabitCreateView,
     index,
     GoalDeleteView,
-    GoalUpdateView
+    GoalUpdateView,
+    GoalStageUpdateView,
+    GoalStageDeleteView
 )
 
 
@@ -52,6 +54,21 @@ urlpatterns = [
         "goals/<int:goal_id>/create/stage/",
         GoalStageCreateView.as_view(),
         name="goal-create-stage"
+    ),
+    path(
+        "goals/<int:goal_id>/update/stage/<int:pk>/",
+        GoalStageUpdateView.as_view(),
+        name="goal-update-stage" # спросить у чата, что не так, как передавть еще пк айди ...
+    ),
+    # path(
+    #     "goals/<int:goal_id>/update/stage/",
+    #     GoalStageUpdateView.as_view(),
+    #     name="goal-update-stage"
+    # ),
+    path(
+        "goals/<int:goal_id>/delete/stage/<int:pk>/",
+        GoalStageDeleteView.as_view(),
+        name="goal-delete-stage"
     ),
     path(
         "habits/",

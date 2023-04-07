@@ -24,6 +24,12 @@
   {% for stage in goal_stages %}
     <li>
       <h1>{{ stage.stage_name }}</h1>
+    <a href="{% url "tracker:goal-update-stage" pk=stage.pk goal_id=goal.id %}" class="btn btn-secondary">
+    Update
+    </a>
+    <a href="{% url "tracker:goal-delete-stage" pk=stage.pk goal_id=goal.id%}" class="btn btn-danger">
+      Delete
+    </a>
     </li>
     stage_description = {{ stage.description }}
     <br>

@@ -79,6 +79,25 @@ class GoalStageCreateView(generic.CreateView):
         return reverse("tracker:goal-detail", kwargs={"pk": self.kwargs["goal_id"]})
 
 
+class GoalStageDeleteView(generic.DeleteView):
+    model = GoalStage
+    template_name = "goal/goalstage_confirm_delete.html"
+    success_url = reverse_lazy("tracker:goal-list")
+
+    def get_success_url(self):
+        return reverse("tracker:goal-detail", kwargs={"pk": self.kwargs["goal_id"]})
+
+
+class GoalStageUpdateView(generic.UpdateView):
+    model = GoalStage
+    fields = "__all__"
+    template_name = "goal/goalstage_form.html"
+    success_url = reverse_lazy("tracker:goal-list")
+
+    def get_success_url(self):
+        return reverse("tracker:goal-detail", kwargs={"pk": self.kwargs["goal_id"]})
+
+
 class HabitListView(generic.ListView):
     model = Habit
     template_name = "habit/habit_list.html"
