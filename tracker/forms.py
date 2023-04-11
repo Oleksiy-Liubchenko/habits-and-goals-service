@@ -4,6 +4,19 @@ from tracker.models import Goal, GoalStage, Commentary, Habit, HabitDayCompletio
 from django.forms.widgets import DateInput
 
 
+class GoalNameSearchForm(forms.Form):
+    name = forms.CharField(
+        max_length=255,
+        required=False,
+        label="",
+        widget=forms.TextInput(
+            attrs={
+                "placeholder": "Search by goal name"
+            }
+        )
+    )
+
+
 class GoalCreationForm(forms.ModelForm):
     class Meta:
         model = Goal

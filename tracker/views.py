@@ -9,7 +9,7 @@ from django.views import generic
 from django.forms import widgets
 
 from tracker.forms import GoalCreationForm, GoalCreationStageForm, GoalCommentaryForm, HabitCreationForm, \
-    HabitCommentaryForm, HabitDayCompletionForm
+    HabitCommentaryForm, HabitDayCompletionForm, GoalNameSearchForm
 from tracker.models import (
     Goal,
     GoalStage,
@@ -43,7 +43,6 @@ def index(request):
         "habits_objects": habits_objects,
     }
 
-
     return render(request, "index.html", context=context)
 
 
@@ -52,6 +51,27 @@ class GoalListView(generic.ListView):
     template_name = "goal/goal_list.html"
     context_object_name = "goal_list"
     paginate_by = 5
+    queryset = Goal.objects.all()
+
+    def get_context_data(self, *, object_list=None, **kwargs):
+        context = super(GoalListView, self).get_context_data(**kwargs)
+
+        name = self.request.GET.get("name")
+
+        context["search_form"] = GoalNameSearchForm(
+            initial={"name": name}
+        )
+        return context
+
+    def get_queryset(self):
+        name = self.request.GET.get("name")
+
+        if name:
+            return self.queryset.filter(
+                name__icontains=name
+            )
+
+        return self.queryset
 
 
 class GoalActiveListView(generic.ListView):
