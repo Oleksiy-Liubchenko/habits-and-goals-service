@@ -53,6 +53,9 @@ class Habit(models.Model):
     month_goal = models.TextField(blank=True, null=True)
     created_at = models.DateTimeField(auto_now_add=True)
 
+    def __str__(self):
+        return self.name
+
 
 class HabitDayCompletion(models.Model):
     STATUS_CHOICE = [
@@ -69,6 +72,9 @@ class HabitDayCompletion(models.Model):
         choices=STATUS_CHOICE,
         default="not_completed"
     )
+
+    def __str__(self):
+        return self.habit
 
 
 class Note(models.Model):
