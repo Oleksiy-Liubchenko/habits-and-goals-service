@@ -32,6 +32,30 @@ class GoalListView(generic.ListView):
     paginate_by = 5
 
 
+class GoalActiveListView(generic.ListView):
+    model = Goal
+    template_name = "goal/goal_list_active.html"
+    context_object_name = "goal_list_active"
+    paginate_by = 5
+    queryset = Goal.objects.filter(status="active")
+
+
+class GoalCompletedListView(generic.ListView):
+    model = Goal
+    template_name = "goal/goal_list_completed.html"
+    context_object_name = "goal_list_completed"
+    paginate_by = 5
+    queryset = Goal.objects.filter(status="completed")
+
+
+class GoalAbandonedListView(generic.ListView):
+    model = Goal
+    template_name = "goal/goal_list_abandoned.html"
+    context_object_name = "goal_list_abandoned"
+    paginate_by = 5
+    queryset = Goal.objects.filter(status="abandoned")
+
+
 class GoalDeleteView(generic.DeleteView):
     model = Goal
     template_name = "goal/goal_confirm_delete.html"

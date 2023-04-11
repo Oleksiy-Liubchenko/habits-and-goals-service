@@ -2,12 +2,26 @@
 
 {% block content%}
   <h1>Goal_list</h1>
+  <div>
+    <a href="{% url "tracker:goal-list-active" %}">
+      Active goals
+    </a>
+    <br>
+    <a href="{% url "tracker:goal-list-completed" %}">
+      Completed goals
+    </a>
+    <br>
+    <a href="{% url "tracker:goal-list-abandoned" %}">
+      Abandoned goals
+    </a>
+  </div>
+
   <a href="{% url 'tracker:goal-create' %}">
     Create
   </a>
     <br>
   <ul>
-  <h1>Goals:</h1>
+  <h1>All Goals:</h1>
   {% for goal in goal_list %}
       <li>
         <a href="{% url "tracker:goal-detail" pk=goal.id %}">

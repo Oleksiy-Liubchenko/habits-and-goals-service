@@ -1,0 +1,24 @@
+{% extends "base.html" %}
+
+{% block content%}
+  <h1>Goal_list</h1>
+  <a href="{% url 'tracker:goal-create' %}">
+    Create
+  </a>
+    <br>
+  <ul>
+  <h1>Completed goals:</h1>
+  {% if goal_list_completed %}
+    {% for goal in goal_list_completed %}
+        <li>
+          <a href="{% url "tracker:goal-detail" pk=goal.id %}">
+            name: {{ goal.name }}
+          </a>
+        </li>
+        description: {{ goal.description }}
+          <br>
+        deadline: {{ goal.deadline.date }}
+    {% endfor %}
+    </ul>
+  {% endif %}
+{% endblock %}
