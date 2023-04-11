@@ -15,12 +15,27 @@
       Done
     </a>
   </div>
+
+    <div class="btn btn-secondary">
+      <a href="{% url "tracker:goal-update-status-abandoned" pk=goal.pk%}">
+        abandon
+      </a>
+    </div>
+
+    {% elif goal.status == "abandoned" %}
+       <div class="btn btn-secondary">
+        {{ goal.status }}
+        <a href="{% url "tracker:goal-update-status-abandoned" pk=goal.pk%}">
+          reactive
+        </a>
+      </div>
+
     {% else %}
-    <div class="btn btn-danger">
-    {{ goal.status }}
-    <a href="{% url "tracker:goal-update-status" pk=goal.pk%}">
-      reactivate
-    </a>
+      <div class="btn btn-danger">
+      {{ goal.status }}
+      <a href="{% url "tracker:goal-update-status" pk=goal.pk%}">
+        reactivate
+      </a>
   </div>
   {% endif %}
 

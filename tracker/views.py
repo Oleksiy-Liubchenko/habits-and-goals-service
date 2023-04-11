@@ -63,6 +63,18 @@ def goal_toggle_status(request, pk):
     return HttpResponseRedirect(reverse_lazy("tracker:goal-detail", args=[pk]))
 
 
+# add login required
+def goal_toggle_status_abandoned(request, pk):
+    goal = get_object_or_404(Goal, pk=pk)
+    if goal.status == "abandoned":
+        goal.status = "active"
+    else:
+        goal.status = "abandoned"
+    goal.save()
+
+    return HttpResponseRedirect(reverse_lazy("tracker:goal-detail", args=[pk]))
+
+
 class GoalCreateView(LoginRequiredMixin, generic.CreateView):
     model = Goal
     template_name = "goal/goal_form.html"
