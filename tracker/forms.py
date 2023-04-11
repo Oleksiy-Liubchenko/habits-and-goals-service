@@ -1,6 +1,6 @@
 from django import forms
 from django.forms import widgets
-from tracker.models import Goal, GoalStage, Commentary, Habit
+from tracker.models import Goal, GoalStage, Commentary, Habit, HabitDayCompletion
 from django.forms.widgets import DateInput
 
 
@@ -39,3 +39,12 @@ class HabitCommentaryForm(forms.ModelForm):
     class Meta:
         model = Commentary
         fields = ["text"]
+
+
+class HabitDayCompletionForm(forms.ModelForm):
+    class Meta:
+        model = HabitDayCompletion
+        fields = ["status"]
+        widgets = {
+            "status": forms.RadioSelect(),
+        }

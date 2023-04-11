@@ -1,18 +1,21 @@
+from datetime import date
+
+from django.contrib import messages
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.http import HttpResponseRedirect
-from django.shortcuts import render
+from django.shortcuts import render, get_object_or_404, redirect
 from django.urls import reverse_lazy, reverse
 from django.views import generic
 from django.forms import widgets
 
 from tracker.forms import GoalCreationForm, GoalCreationStageForm, GoalCommentaryForm, HabitCreationForm, \
-    HabitCommentaryForm
+    HabitCommentaryForm, HabitDayCompletionForm
 from tracker.models import (
     Goal,
     GoalStage,
     Habit,
     Note,
-    Commentary,
+    Commentary, HabitDayCompletion,
 )
 
 
@@ -122,7 +125,71 @@ class HabitDetailView(generic.DetailView):
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         context["habit_commentaries"] = self.object.commentaries.all()
+        context["form"] = HabitDayCompletionForm()
+        context["total_days"] = (date.today() - self.object.created_at.date()).days
+        context["completed_days"] = self.object.habit_completions.filter(status="completed").count()
+        # --- if you will not use hide status if completed - delete comp.status.today
+        context["completion_status_today"] = self.object.habit_completions.filter(complete_date=date.today()).first()
+        # ---
+        context["not_completed_days"] = self.object.habit_completions.filter(status="not_completed").count()
+        context["ignored_days"] = context["total_days"] - (context["completed_days"] + context["not_completed_days"])
+        context["progress_percent"] = 100 * round((context["completed_days"] / context["total_days"]), 2)
+        context["update_completion_form"] = HabitDayCompletionForm(instance=context["completion_status_today"]) if context["completion_status_today"] else None
         return context
+
+    def post(self, request, *args, **kwargs):
+        habit = self.get_object()
+        form = HabitDayCompletionForm(request.POST)
+        if form.is_valid():
+            completion = form.save(commit=False)
+            completion.user = request.user
+            completion.habit = habit
+            completion.complete_date = date.today()
+            completion.save()
+            messages.success(
+                request,
+                f"Habit '{habit.name}' marked as '{completion.get_status_display()}' for today."
+            )
+        return redirect('tracker:habit-detail', pk=habit.pk)
+
+# def habit_detail(request, pk):
+#     habit = get_object_or_404(Habit, pk=pk)
+#     if request.method == 'POST':
+#         form = HabitDayCompletionForm(request.POST)
+#         if form.is_valid():
+#             completion = HabitDayCompletion.objects.create(
+#                 user=request.user,
+#                 habit=habit,
+#                 complete_date=date.today(),
+#                 status=form.cleaned_data['status'],
+#             )
+#             messages.success(request, f"Habit '{habit.name}' marked as '{completion.get_status_display()}' for today.")
+#             return redirect('habit_detail', pk=habit.pk)
+#     else:
+#         form = HabitDayCompletionForm()
+#     context = {
+#         'habit': habit,
+#         'form': form,
+#     }
+#     return render(request, 'habit/habit_detail.html', context)
+
+# trying to update status for each day or only last status:
+# ---------------
+# class HabitDayCompletionUpdateView(generic.UpdateView):
+#     model = HabitDayCompletion
+#     fields = ["habit", "status"]
+#     template_name = "habit/habit_day_completion_form.html"
+#
+#     # def get_queryset(self):
+#     #     return HabitDayCompletion.objects.filter(
+#     #         user=self.request.user,
+#     #         habit_id=self.kwargs["pk"]
+#     #     )
+#
+#     def get_success_url(self):
+#         return reverse("tracker:habit-detail", kwargs={"pk": self.kwargs["pk"]})
+
+# ---------------
 
 
 class NoteCreateView(generic.CreateView):

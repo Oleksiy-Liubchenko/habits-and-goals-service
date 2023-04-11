@@ -14,7 +14,8 @@ from tracker.views import (
     GoalDeleteView,
     GoalUpdateView,
     GoalStageUpdateView,
-    GoalStageDeleteView
+    GoalStageDeleteView,
+    # HabitDayCompletionUpdateView
 )
 
 
@@ -85,6 +86,12 @@ urlpatterns = [
         HabitDetailView.as_view(),
         name="habit-detail"
     ),
+    # path(
+    #     "habits/<int:pk>/completion/<int:completion_pk>/update/",
+    #     HabitDayCompletionUpdateView.as_view(),
+    #     name="habit-completion-update"
+    # ),
+
     # add update view. do not forget
     path(
         "habits/<int:pk>/create/note/",
