@@ -5,46 +5,49 @@
   <h3>Goals progress:</h3>
 
   <div style="display: flex; align-items: center;">
-    <p style="margin-right: 10px;">"10" Active Goals(
-      <a href="#">
-      link to goals
-      </a>)
+    <p style="margin-right: 10px;">
+      {{ active_goals_number }}
+      <a href="{% url "tracker:goal-list-active" %}">
+        Active Goals
+      </a>
     </p>
 
     <div class="progress" style="width: 10%;">
-      <div class="progress-bar" role="progressbar" style="width: 50%;"
+      <div class="progress-bar" role="progressbar" style="width: {{ active_goals_percent }}%;"
            aria-valuenow="50" aria-valuemin="0" aria-valuemax="100">
-        50%
+        {{ active_goals_percent }}%
       </div>
     </div>
   </div>
 
    <div style="display: flex; align-items: center;">
-    <p style="margin-right: 10px;">"2" Abandon goals(
-      <a href="#">
-      link to goals
-      </a>)
+    <p style="margin-right: 10px;">
+      {{ abandoned_goals_number }}
+      <a href="{% url "tracker:goal-list-abandoned" %}">
+        Abandon goals
+      </a>
     </p>
 
     <div class="progress" style="width: 10%;">
-      <div class="progress-bar" role="progressbar" style="width: 10%;"
+      <div class="progress-bar" role="progressbar" style="width: {{ abandoned_goals_percent }}%;"
            aria-valuenow="50" aria-valuemin="0" aria-valuemax="100">
-        10%
+        {{ abandoned_goals_percent }}%
       </div>
     </div>
   </div>
 
   <div style="display: flex; align-items: center;">
-    <p style="margin-right: 10px;">"3" Complete goals(
-      <a href="#">
-      link to goals
-      </a>)
+    <p style="margin-right: 10px;">
+      {{ completed_goals_number }}
+      <a href="{% url "tracker:goal-list-completed" %}">
+       Complete goals
+      </a>
     </p>
 
     <div class="progress" style="width: 10%;">
-      <div class="progress-bar" role="progressbar" style="width: 78%;"
+      <div class="progress-bar" role="progressbar" style="width: {{ completed_goals_percent }}%;"
            aria-valuenow="50" aria-valuemin="0" aria-valuemax="100">
-        78%
+        {{ completed_goals_percent }}%
       </div>
     </div>
   </div>
@@ -52,7 +55,33 @@
 
 
   <h3>Habit progress:</h3>
-    <p>"5" Active Habits(link to habit)</p>
+    <p>
+      {{ habits_number }}
+      <a href="{% url "tracker:habit-list" %}">
+        Habits:
+      </a>
+    </p>
 
+
+  <table class="table table-bordered table-striped">
+  <thead>
+    <tr>
+      <th>Name</th>
+      <th>Description</th>
+      <th>Month Goal</th>
+      <th>Start date</th>
+    </tr>
+  </thead>
+  <tbody>
+    {% for habit in habits_objects %}
+    <tr>
+      <td><a href="{% url "tracker:habit-detail" pk=habit.pk %}">{{ habit.name }}</a></td>
+      <td>{{ habit.description }}</td>
+      <td>{{ habit.month_goal }}</td>
+      <td>{{ habit.created_at }}</td>
+    </tr>
+    {% endfor %}
+  </tbody>
+</table>
 
 {% endblock content %}

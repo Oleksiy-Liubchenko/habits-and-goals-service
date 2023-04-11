@@ -20,7 +20,29 @@ from tracker.models import (
 
 
 def index(request):
-    context = {}
+    active_goals_number = Goal.objects.filter(status="active").count()
+    completed_goals_number = Goal.objects.filter(status="completed").count()
+    abandoned_goals_number = Goal.objects.filter(status="abandoned").count()
+    total_goals_number = Goal.objects.all().count()
+
+    active_goals_percent = round(active_goals_number / total_goals_number * 100, 1)
+    completed_goals_percent = round(completed_goals_number / total_goals_number * 100, 1)
+    abandoned_goals_percent = round(abandoned_goals_number / total_goals_number * 100, 1)
+
+    habits_number = Habit.objects.all().count()
+    habits_objects = Habit.objects.all()
+
+    context = {
+        "active_goals_number": active_goals_number,
+        "completed_goals_number": completed_goals_number,
+        "abandoned_goals_number": abandoned_goals_number,
+        "active_goals_percent": active_goals_percent,
+        "completed_goals_percent": completed_goals_percent,
+        "abandoned_goals_percent": abandoned_goals_percent,
+        "habits_number": habits_number,
+        "habits_objects": habits_objects,
+    }
+
 
     return render(request, "index.html", context=context)
 
