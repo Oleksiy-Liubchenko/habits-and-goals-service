@@ -15,7 +15,7 @@ from tracker.models import (
     GoalStage,
     Habit,
     Note,
-    Commentary, HabitDayCompletion,
+    Commentary, HabitDayCompletion, User
 )
 
 
@@ -45,6 +45,22 @@ class GoalUpdateView(generic.UpdateView):
 
     def get_success_url(self):
         return reverse("tracker:goal-detail", kwargs={"pk": self.kwargs["pk"]})
+
+# class GoalUpdateStatus(generic.UpdateView):
+#     model = Goal
+#     fields = ["status",]
+#     template_name = goa
+
+
+# add login required
+def goal_toggle_status(request, pk):
+    goal = get_object_or_404(Goal, pk=pk)
+    if goal.status == "active":
+        goal.status = "completed"
+    else:
+        goal.status = "active"
+    goal.save()
+    return HttpResponseRedirect(reverse_lazy("tracker:goal-detail", args=[pk]))
 
 
 class GoalCreateView(LoginRequiredMixin, generic.CreateView):

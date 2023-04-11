@@ -5,7 +5,27 @@
 
   <br>
 
+
   <h1>{{ goal.name }}</h1>
+
+  {% if goal.status == "active" %}
+  <div class="btn btn-success">
+    {{ goal.status }}
+    <a href="{% url "tracker:goal-update-status" pk=goal.pk%}">
+      Done
+    </a>
+  </div>
+    {% else %}
+    <div class="btn btn-danger">
+    {{ goal.status }}
+    <a href="{% url "tracker:goal-update-status" pk=goal.pk%}">
+      reactivate
+    </a>
+  </div>
+  {% endif %}
+
+  <br><br><br><br>
+
   <a href="{% url "tracker:goal-update" pk=goal.id %}" class="btn btn-secondary">
     Update
   </a>
