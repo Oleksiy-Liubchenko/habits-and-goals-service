@@ -126,15 +126,16 @@ class HabitDetailView(generic.DetailView):
         context = super().get_context_data(**kwargs)
         context["habit_commentaries"] = self.object.commentaries.all()
         context["form"] = HabitDayCompletionForm()
-        context["total_days"] = (date.today() - self.object.created_at.date()).days
+        total_days = (date.today() - self.object.created_at.date()).days
+        context["total_days"] = total_days if total_days > 0 else 1
         context["completed_days"] = self.object.habit_completions.filter(status="completed").count()
         # --- if you will not use hide status if completed - delete comp.status.today
         context["completion_status_today"] = self.object.habit_completions.filter(complete_date=date.today()).first()
         # ---
         context["not_completed_days"] = self.object.habit_completions.filter(status="not_completed").count()
         context["ignored_days"] = context["total_days"] - (context["completed_days"] + context["not_completed_days"])
-        context["progress_percent"] = 100 * round((context["completed_days"] / context["total_days"]), 2)
         context["update_completion_form"] = HabitDayCompletionForm(instance=context["completion_status_today"]) if context["completion_status_today"] else None
+        context["progress_percent"] = 100 * round((context["completed_days"] / context["total_days"]), 2) if context["total_days"] else 0
         return context
 
     def post(self, request, *args, **kwargs):
