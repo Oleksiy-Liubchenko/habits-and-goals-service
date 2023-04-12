@@ -161,6 +161,7 @@ class GoalDetailView(generic.DetailView):
         context = super().get_context_data(**kwargs)
         context['goal_stages'] = self.object.stages.all()
         context['goal_commentaries'] = self.object.commentaries.all()
+        context["form"] = GoalCommentaryForm
         return context
 
 
@@ -368,10 +369,10 @@ class CommentaryGoalCreateView(LoginRequiredMixin, generic.CreateView):
         commentary.save()
         commentary.goals.add(goal)
         commentary.save()
-        return super().form_valid(form)
+        return HttpResponseRedirect(reverse_lazy("tracker:goal-detail", kwargs={"pk": self.kwargs["pk"]}))
 
     def get_success_url(self):
-        return reverse("tracker:goal-detail", kwargs={"pk": self.kwargs["pk"]})
+        return reverse_lazy("tracker:goal-detail", kwargs={"pk": self.kwargs["pk"]})
 
 
 class CommentaryHabitCreateView(generic.CreateView):
