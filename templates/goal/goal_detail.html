@@ -61,7 +61,11 @@
   {% for stage in goal_stages %}
     <li>
       <div class="d-flex align-items-center">
-        <h1>{{ stage.stage_name }}</h1>
+        {% if stage.status == "active" %}
+          <h1>{{ stage.stage_name }}</h1>
+          {% else %}
+            <h1><del>{{ stage.stage_name }}</del></h1>
+        {% endif %}
         <a href="{% url "tracker:goal-update-stage" pk=stage.pk goal_id=goal.id %}" class="btn btn-secondary">
           ✏️
         </a>
@@ -70,6 +74,39 @@
         </a>
       </div>
     </li>
+
+    {% if stage.status == "active" %}
+  <div class="btn btn-success">
+    {{ stage.status }}
+    <a href="{% url "tracker:goal-update-stage-status" goal_id=goal.id pk=stage.id%}">
+      Done
+    </a>
+  </div>
+
+    <div class="btn btn-secondary">
+      <a href="{% url "tracker:goal-update-stage-status-abandoned" goal_id=goal.id pk=stage.id%}">
+        abandon
+      </a>
+    </div>
+
+    {% elif stage.status == "abandoned" %}
+       <div class="btn btn-secondary">
+        {{ stage.status }}
+        <a href="{% url "tracker:goal-update-stage-status-abandoned" goal_id=goal.id pk=stage.id%}">
+          reactive
+        </a>
+      </div>
+
+    {% else %}
+      <div class="btn btn-danger">
+      {{ stage.status }}
+      <a href="{% url "tracker:goal-update-stage-status" goal_id=goal.id pk=stage.id%}">
+        reactivate
+      </a>
+  </div>
+  {% endif %}
+    <br>
+
     stage_description = {{ stage.description }}
     <br>
     stage_deadline = {{ stage.deadline.date }}

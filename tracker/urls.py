@@ -18,7 +18,8 @@ from tracker.views import (
     goal_toggle_status,
     goal_toggle_status_abandoned,
     GoalActiveListView,
-    GoalCompletedListView, GoalAbandonedListView, HabitDeleteView, HabitUpdateView
+    GoalCompletedListView, GoalAbandonedListView, HabitDeleteView, HabitUpdateView, goal_stage_toggle_status,
+    goal_stage_toggle_status_abandoned
     # HabitDayCompletionUpdateView
 )
 
@@ -100,6 +101,16 @@ urlpatterns = [
         "goals/<int:goal_id>/delete/stage/<int:pk>/",
         GoalStageDeleteView.as_view(),
         name="goal-delete-stage"
+    ),
+    path(
+        "goals/<int:goal_id>/toggle/<int:pk>/",
+        goal_stage_toggle_status,
+        name="goal-update-stage-status"
+    ),
+    path(
+        "goals/<int:goal_id>/toggle/<int:pk>/abandoned/",
+        goal_stage_toggle_status_abandoned,
+        name="goal-update-stage-status-abandoned"
     ),
     path(
         "habits/",

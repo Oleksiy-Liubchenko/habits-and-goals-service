@@ -195,6 +195,28 @@ class GoalStageUpdateView(generic.UpdateView):
         return reverse("tracker:goal-detail", kwargs={"pk": self.kwargs["goal_id"]})
 
 
+def goal_stage_toggle_status(request, goal_id, pk):
+    goal_stage = get_object_or_404(GoalStage, pk=pk)
+    if goal_stage.status == "active":
+        goal_stage.status = "completed"
+    else:
+        goal_stage.status = "active"
+    goal_stage.save()
+    return HttpResponseRedirect(reverse_lazy("tracker:goal-detail", args=[goal_id]))
+
+
+# add login required
+def goal_stage_toggle_status_abandoned(request, goal_id, pk):
+    goal_stage = get_object_or_404(GoalStage, pk=pk)
+    if goal_stage.status == "abandoned":
+        goal_stage.status = "active"
+    else:
+        goal_stage.status = "abandoned"
+    goal_stage.save()
+
+    return HttpResponseRedirect(reverse_lazy("tracker:goal-detail", args=[goal_id]))
+
+
 class HabitListView(generic.ListView):
     model = Habit
     template_name = "habit/habit_list.html"
