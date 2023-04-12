@@ -49,9 +49,6 @@
 
   <br><br><br><br>
 
-
-
-
   <h3>deadline:</h3>{{ goal.deadline }}
   <h3>description:</h3>{{ goal.description }}
   <br>
@@ -114,10 +111,9 @@
     <br>
     stage_created_at = {{ stage.created_at }}
   {% endfor %}
+  </ul>
     <br><br>
-{#    <a href="{% url "tracker:goal-commentary-create" pk=goal.id%}">#}
-{#        Create commentary#}
-{#    </a>#}
+
   <form method="POST" action="{% url 'tracker:goal-commentary-create' pk=goal.pk %}" >
     {% csrf_token %}
     {{ form|crispy }}
@@ -126,13 +122,13 @@
   <br>
       Comment zone:
     <ul>
-    {% for comment in goal_commentaries %}
-      <li>
-        <h2>{{ comment.text }}</h2>
-        (Comment by: {{ comment.user }} at {{ comment.created_at.time }} {{ comment.created_at.date }})
-      </li>
-    {% empty %}
-      <p>No comments yet.</p>
-    {% endfor %}
-  </ul>
+      {% for comment in goal_commentaries %}
+        <li>
+          <h2>{{ comment.text }}</h2>
+          (Comment by: {{ comment.user }} at {{ comment.created_at.time }} {{ comment.created_at.date }})
+        </li>
+      {% empty %}
+        <p>No comments yet.</p>
+      {% endfor %}
+    </ul>
 {% endblock %}

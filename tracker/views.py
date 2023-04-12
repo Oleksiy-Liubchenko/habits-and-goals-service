@@ -1,12 +1,12 @@
 from datetime import date
 
 from django.contrib import messages
+from django.contrib.auth.decorators import login_required
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.http import HttpResponseRedirect
 from django.shortcuts import render, get_object_or_404, redirect
 from django.urls import reverse_lazy, reverse
 from django.views import generic
-from django.forms import widgets
 
 from tracker.forms import GoalCreationForm, GoalCreationStageForm, GoalCommentaryForm, HabitCreationForm, \
     HabitCommentaryForm, HabitDayCompletionForm, GoalNameSearchForm, HabitNameSearchForm
@@ -15,10 +15,11 @@ from tracker.models import (
     GoalStage,
     Habit,
     Note,
-    Commentary, HabitDayCompletion, User
+    Commentary
 )
 
 
+@login_required
 def index(request):
     active_goals_number = Goal.objects.filter(status="active").count()
     completed_goals_number = Goal.objects.filter(status="completed").count()
@@ -46,7 +47,7 @@ def index(request):
     return render(request, "index.html", context=context)
 
 
-class GoalListView(generic.ListView):
+class GoalListView(LoginRequiredMixin, generic.ListView):
     model = Goal
     template_name = "goal/goal_list.html"
     context_object_name = "goal_list"
@@ -75,7 +76,7 @@ class GoalListView(generic.ListView):
         return self.queryset
 
 
-class GoalActiveListView(generic.ListView):
+class GoalActiveListView(LoginRequiredMixin, generic.ListView):
     model = Goal
     template_name = "goal/goal_list_active.html"
     context_object_name = "goal_list_active"
@@ -83,7 +84,7 @@ class GoalActiveListView(generic.ListView):
     queryset = Goal.objects.filter(status="active")
 
 
-class GoalCompletedListView(generic.ListView):
+class GoalCompletedListView(LoginRequiredMixin, generic.ListView):
     model = Goal
     template_name = "goal/goal_list_completed.html"
     context_object_name = "goal_list_completed"
@@ -91,7 +92,7 @@ class GoalCompletedListView(generic.ListView):
     queryset = Goal.objects.filter(status="completed")
 
 
-class GoalAbandonedListView(generic.ListView):
+class GoalAbandonedListView(LoginRequiredMixin, generic.ListView):
     model = Goal
     template_name = "goal/goal_list_abandoned.html"
     context_object_name = "goal_list_abandoned"
@@ -99,13 +100,13 @@ class GoalAbandonedListView(generic.ListView):
     queryset = Goal.objects.filter(status="abandoned")
 
 
-class GoalDeleteView(generic.DeleteView):
+class GoalDeleteView(LoginRequiredMixin, generic.DeleteView):
     model = Goal
     template_name = "goal/goal_confirm_delete.html"
     success_url = reverse_lazy("tracker:goal-list")
 
 
-class GoalUpdateView(generic.UpdateView):
+class GoalUpdateView(LoginRequiredMixin, generic.UpdateView):
     model = Goal
     fields = "__all__"
     template_name = "goal/goal_form.html"
@@ -113,13 +114,8 @@ class GoalUpdateView(generic.UpdateView):
     def get_success_url(self):
         return reverse("tracker:goal-detail", kwargs={"pk": self.kwargs["pk"]})
 
-# class GoalUpdateStatus(generic.UpdateView):
-#     model = Goal
-#     fields = ["status",]
-#     template_name = goa
 
-
-# add login required
+@login_required
 def goal_toggle_status(request, pk):
     goal = get_object_or_404(Goal, pk=pk)
     if goal.status == "active":
@@ -130,7 +126,7 @@ def goal_toggle_status(request, pk):
     return HttpResponseRedirect(reverse_lazy("tracker:goal-detail", args=[pk]))
 
 
-# add login required
+@login_required
 def goal_toggle_status_abandoned(request, pk):
     goal = get_object_or_404(Goal, pk=pk)
     if goal.status == "abandoned":
@@ -153,7 +149,7 @@ class GoalCreateView(LoginRequiredMixin, generic.CreateView):
         return super().form_valid(form)
 
 
-class GoalDetailView(generic.DetailView):
+class GoalDetailView(LoginRequiredMixin, generic.DetailView):
     model = Goal
     template_name = "goal/goal_detail.html"
 
@@ -165,7 +161,7 @@ class GoalDetailView(generic.DetailView):
         return context
 
 
-class GoalStageCreateView(generic.CreateView):
+class GoalStageCreateView(LoginRequiredMixin, generic.CreateView):
     model = GoalStage
     form_class = GoalCreationStageForm
     template_name = "goal/goalstage_form.html"
@@ -178,7 +174,7 @@ class GoalStageCreateView(generic.CreateView):
         return reverse("tracker:goal-detail", kwargs={"pk": self.kwargs["goal_id"]})
 
 
-class GoalStageDeleteView(generic.DeleteView):
+class GoalStageDeleteView(LoginRequiredMixin, generic.DeleteView):
     model = GoalStage
     template_name = "goal/goalstage_confirm_delete.html"
     success_url = reverse_lazy("tracker:goal-list")
@@ -187,7 +183,7 @@ class GoalStageDeleteView(generic.DeleteView):
         return reverse("tracker:goal-detail", kwargs={"pk": self.kwargs["goal_id"]})
 
 
-class GoalStageUpdateView(generic.UpdateView):
+class GoalStageUpdateView(LoginRequiredMixin, generic.UpdateView):
     model = GoalStage
     fields = "__all__"
     template_name = "goal/goalstage_form.html"
@@ -197,6 +193,7 @@ class GoalStageUpdateView(generic.UpdateView):
         return reverse("tracker:goal-detail", kwargs={"pk": self.kwargs["goal_id"]})
 
 
+@login_required
 def goal_stage_toggle_status(request, goal_id, pk):
     goal_stage = get_object_or_404(GoalStage, pk=pk)
     if goal_stage.status == "active":
@@ -207,7 +204,7 @@ def goal_stage_toggle_status(request, goal_id, pk):
     return HttpResponseRedirect(reverse_lazy("tracker:goal-detail", args=[goal_id]))
 
 
-# add login required
+@login_required
 def goal_stage_toggle_status_abandoned(request, goal_id, pk):
     goal_stage = get_object_or_404(GoalStage, pk=pk)
     if goal_stage.status == "abandoned":
@@ -219,7 +216,7 @@ def goal_stage_toggle_status_abandoned(request, goal_id, pk):
     return HttpResponseRedirect(reverse_lazy("tracker:goal-detail", args=[goal_id]))
 
 
-class HabitListView(generic.ListView):
+class HabitListView(LoginRequiredMixin, generic.ListView):
     model = Habit
     template_name = "habit/habit_list.html"
     paginate_by = 5
@@ -247,7 +244,7 @@ class HabitListView(generic.ListView):
         return self.queryset
 
 
-class HabitCreateView(generic.CreateView):
+class HabitCreateView(LoginRequiredMixin, generic.CreateView):
     model = Habit
     template_name = "habit/habit_form.html"
     success_url = reverse_lazy("tracker:habit-list")
@@ -258,13 +255,13 @@ class HabitCreateView(generic.CreateView):
         return super().form_valid(form)
 
 
-class HabitDeleteView(generic.DeleteView):
+class HabitDeleteView(LoginRequiredMixin, generic.DeleteView):
     model = Habit
     template_name = "habit/habit_confirm_delete.html"
     success_url = reverse_lazy("tracker:habit-list")
 
 
-class HabitUpdateView(generic.UpdateView):
+class HabitUpdateView(LoginRequiredMixin, generic.UpdateView):
     model = Habit
     fields = "__all__"
     template_name = "habit/habit_form.html"
@@ -273,7 +270,7 @@ class HabitUpdateView(generic.UpdateView):
         return reverse("tracker:habit-detail", kwargs={"pk": self.kwargs["pk"]})
 
 
-class HabitDetailView(generic.DetailView):
+class HabitDetailView(LoginRequiredMixin, generic.DetailView):
     model = Habit
     template_name = "habit/habit_detail.html"
 
@@ -285,9 +282,7 @@ class HabitDetailView(generic.DetailView):
         total_days = (date.today() - self.object.created_at.date()).days
         context["total_days"] = total_days + 1
         context["completed_days"] = self.object.habit_completions.filter(status="completed").count()
-        # --- if you will not use hide status if completed - delete comp.status.today
         context["completion_status_today"] = self.object.habit_completions.filter(complete_date=date.today()).first()
-        # ---
         context["not_completed_days"] = self.object.habit_completions.filter(status="not_completed").count()
         context["ignored_days"] = context["total_days"] - (context["completed_days"] + context["not_completed_days"])
         context["update_completion_form"] = HabitDayCompletionForm(instance=context["completion_status_today"]) if context["completion_status_today"] else None
@@ -308,45 +303,6 @@ class HabitDetailView(generic.DetailView):
                 f"Habit '{habit.name}' marked as '{completion.get_status_display()}' for today."
             )
         return redirect('tracker:habit-detail', pk=habit.pk)
-
-# def habit_detail(request, pk):
-#     habit = get_object_or_404(Habit, pk=pk)
-#     if request.method == 'POST':
-#         form = HabitDayCompletionForm(request.POST)
-#         if form.is_valid():
-#             completion = HabitDayCompletion.objects.create(
-#                 user=request.user,
-#                 habit=habit,
-#                 complete_date=date.today(),
-#                 status=form.cleaned_data['status'],
-#             )
-#             messages.success(request, f"Habit '{habit.name}' marked as '{completion.get_status_display()}' for today.")
-#             return redirect('habit_detail', pk=habit.pk)
-#     else:
-#         form = HabitDayCompletionForm()
-#     context = {
-#         'habit': habit,
-#         'form': form,
-#     }
-#     return render(request, 'habit/habit_detail.html', context)
-
-# trying to update status for each day or only last status:
-# ---------------
-# class HabitDayCompletionUpdateView(generic.UpdateView):
-#     model = HabitDayCompletion
-#     fields = ["habit", "status"]
-#     template_name = "habit/habit_day_completion_form.html"
-#
-#     # def get_queryset(self):
-#     #     return HabitDayCompletion.objects.filter(
-#     #         user=self.request.user,
-#     #         habit_id=self.kwargs["pk"]
-#     #     )
-#
-#     def get_success_url(self):
-#         return reverse("tracker:habit-detail", kwargs={"pk": self.kwargs["pk"]})
-
-# ---------------
 
 
 class NoteCreateView(generic.CreateView):
@@ -376,7 +332,7 @@ class CommentaryGoalCreateView(LoginRequiredMixin, generic.CreateView):
         return reverse_lazy("tracker:goal-detail", kwargs={"pk": self.kwargs["pk"]})
 
 
-class CommentaryHabitCreateView(generic.CreateView):
+class CommentaryHabitCreateView(LoginRequiredMixin, generic.CreateView):
     model = Commentary
     form_class = HabitCommentaryForm
     template_name = "habit/habit_commentary_form.html"

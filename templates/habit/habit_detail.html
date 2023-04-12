@@ -74,9 +74,7 @@
       {% with group.list|last as completion %}
         <li>
           {{ completion.complete_date }} - {{ completion.get_status_display }}
-{#          <a href="{% url "tracker:habit-completion-update" pk=habit.pk completion_pk=completion.pk %}">#}
-{#            Update#}
-{#          </a>#}
+
         </li>
       {% endwith %}
     {% endfor %}
@@ -84,11 +82,8 @@
 {% endif %}
 
 
-  <br>
-    <br><br>
-{#    <a href="{% url "tracker:habit-commentary-create" pk=habit.id%}">#}
-{#        Create commentary#}
-{#    </a>#}
+  <br><br><br>
+
   <form method="POST" action="{% url 'tracker:habit-commentary-create' pk=habit.pk %}" >
     {% csrf_token %}
     {{ commentary_form|crispy }}
