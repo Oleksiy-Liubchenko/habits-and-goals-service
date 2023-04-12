@@ -68,6 +68,9 @@ class HabitCommentaryForm(forms.ModelForm):
     class Meta:
         model = Commentary
         fields = ["text"]
+        widgets = {
+            'text': forms.Textarea(attrs={'cols': 40, 'rows': 2}),
+        }
 
 
 class HabitDayCompletionForm(forms.ModelForm):

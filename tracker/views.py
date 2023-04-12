@@ -279,8 +279,9 @@ class HabitDetailView(generic.DetailView):
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
+        context["commentary_form"] = HabitCommentaryForm()
         context["habit_commentaries"] = self.object.commentaries.all()
-        context["form"] = HabitDayCompletionForm()
+        context["day_completion_form"] = HabitDayCompletionForm()
         total_days = (date.today() - self.object.created_at.date()).days
         context["total_days"] = total_days + 1
         context["completed_days"] = self.object.habit_completions.filter(status="completed").count()
@@ -392,7 +393,7 @@ class CommentaryHabitCreateView(generic.CreateView):
         commentary.save()
         commentary.habits.add(habit)
         commentary.save()
-        return super().form_valid(form)
+        return HttpResponseRedirect(reverse_lazy("tracker:habit-detail", kwargs={"pk": self.kwargs["pk"]}))
 
     def get_success_url(self):
-        return reverse("tracker:habit-detail", kwargs={"pk": self.kwargs["pk"]})
+        return reverse_lazy("tracker:habit-detail", kwargs={"pk": self.kwargs["pk"]})

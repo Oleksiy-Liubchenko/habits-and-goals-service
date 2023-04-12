@@ -1,4 +1,5 @@
 {% extends "base.html" %}
+{% load crispy_forms_filters %}
 
 {% block content%}
 
@@ -26,7 +27,7 @@
   <form method="POST">
     {% csrf_token %}
     <div class="form-check">
-      {{ form.as_p }}
+      {{ day_completion_form.as_p }}
     </div>
     <button type="submit" class="btn btn-primary">Submit</button>
   </form>
@@ -85,9 +86,15 @@
 
   <br>
     <br><br>
-    <a href="{% url "tracker:habit-commentary-create" pk=habit.id%}">
-        Create commentary
-    </a>
+{#    <a href="{% url "tracker:habit-commentary-create" pk=habit.id%}">#}
+{#        Create commentary#}
+{#    </a>#}
+  <form method="POST" action="{% url 'tracker:habit-commentary-create' pk=habit.pk %}" >
+    {% csrf_token %}
+    {{ commentary_form|crispy }}
+    <button type="submit" class="btn btn-primary">Submit</button>
+  </form>
+  <br>
   <br>
       Comment zone:
     <ul>
