@@ -21,17 +21,18 @@ from tracker.models import (
 
 @login_required
 def index(request):
-    active_goals_number = Goal.objects.filter(status="active").count()
-    completed_goals_number = Goal.objects.filter(status="completed").count()
-    abandoned_goals_number = Goal.objects.filter(status="abandoned").count()
-    total_goals_number = Goal.objects.all().count()
+    user = request.user
+    active_goals_number = Goal.objects.filter(status="active", user=user).count()
+    completed_goals_number = Goal.objects.filter(status="completed", user=user).count()
+    abandoned_goals_number = Goal.objects.filter(status="abandoned", user=user).count()
+    total_goals_number = Goal.objects.filter(user=user).count()
 
     active_goals_percent = round(active_goals_number / total_goals_number * 100, 1)
     completed_goals_percent = round(completed_goals_number / total_goals_number * 100, 1)
     abandoned_goals_percent = round(abandoned_goals_number / total_goals_number * 100, 1)
 
-    habits_number = Habit.objects.all().count()
-    habits_objects = Habit.objects.all()
+    habits_number = Habit.objects.filter(user=user).count()
+    habits_objects = Habit.objects.filter(user=user)
 
     context = {
         "active_goals_number": active_goals_number,
@@ -66,14 +67,17 @@ class GoalListView(LoginRequiredMixin, generic.ListView):
         return context
 
     def get_queryset(self):
+        user = self.request.user
         name = self.request.GET.get("name")
+        queryset = super().get_queryset()
 
         if name:
             return self.queryset.filter(
-                name__icontains=name
+                name__icontains=name,
+                user=user
             )
 
-        return self.queryset
+        return queryset.filter(user=user)
 
 
 class GoalActiveListView(LoginRequiredMixin, generic.ListView):
@@ -83,6 +87,10 @@ class GoalActiveListView(LoginRequiredMixin, generic.ListView):
     paginate_by = 5
     queryset = Goal.objects.filter(status="active")
 
+    def get_queryset(self):
+        user = self.request.user
+        return Goal.objects.filter(user=user, status="active")
+
 
 class GoalCompletedListView(LoginRequiredMixin, generic.ListView):
     model = Goal
@@ -91,6 +99,10 @@ class GoalCompletedListView(LoginRequiredMixin, generic.ListView):
     paginate_by = 5
     queryset = Goal.objects.filter(status="completed")
 
+    def get_queryset(self):
+        user = self.request.user
+        return Goal.objects.filter(user=user, status="completed")
+
 
 class GoalAbandonedListView(LoginRequiredMixin, generic.ListView):
     model = Goal
@@ -98,6 +110,10 @@ class GoalAbandonedListView(LoginRequiredMixin, generic.ListView):
     context_object_name = "goal_list_abandoned"
     paginate_by = 5
     queryset = Goal.objects.filter(status="abandoned")
+
+    def get_queryset(self):
+        user = self.request.user
+        return Goal.objects.filter(user=user, status="abandoned")
 
 
 class GoalDeleteView(LoginRequiredMixin, generic.DeleteView):
@@ -234,14 +250,17 @@ class HabitListView(LoginRequiredMixin, generic.ListView):
         return context
 
     def get_queryset(self):
+        user = self.request.user
         name = self.request.GET.get("name")
+        queryset = super().get_queryset()
 
         if name:
             return self.queryset.filter(
-                name__icontains=name
+                name__icontains=name,
+                user=user
             )
 
-        return self.queryset
+        return queryset.filter(user=user)
 
 
 class HabitCreateView(LoginRequiredMixin, generic.CreateView):
