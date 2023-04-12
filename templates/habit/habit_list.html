@@ -1,6 +1,14 @@
 {% extends "base.html" %}
+{% load crispy_forms_filters %}
 
 {% block content%}
+
+  <form action="" method="get" class="form-inline">
+      {{ search_form|crispy }}
+      <input type="submit" value="Search" class="btn btn-primary">
+    </form>
+  <br>
+
   <h1>Goal_list</h1>
   <a href="{% url 'tracker:habit-create' %}">
     Create

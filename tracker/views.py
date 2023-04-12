@@ -9,7 +9,7 @@ from django.views import generic
 from django.forms import widgets
 
 from tracker.forms import GoalCreationForm, GoalCreationStageForm, GoalCommentaryForm, HabitCreationForm, \
-    HabitCommentaryForm, HabitDayCompletionForm, GoalNameSearchForm
+    HabitCommentaryForm, HabitDayCompletionForm, GoalNameSearchForm, HabitNameSearchForm
 from tracker.models import (
     Goal,
     GoalStage,
@@ -199,6 +199,28 @@ class HabitListView(generic.ListView):
     model = Habit
     template_name = "habit/habit_list.html"
     paginate_by = 5
+    queryset = Habit.objects.all()
+
+    def get_context_data(self, *, object_list=None, **kwargs):
+        context = super(HabitListView, self).get_context_data(**kwargs)
+
+        name = self.request.GET.get("name")
+
+        context["search_form"] = HabitNameSearchForm(
+            initial={"name": name}
+        )
+
+        return context
+
+    def get_queryset(self):
+        name = self.request.GET.get("name")
+
+        if name:
+            return self.queryset.filter(
+                name_icontains=name
+            )
+
+        return self.queryset
 
 
 class HabitCreateView(generic.CreateView):
