@@ -217,7 +217,7 @@ class HabitListView(generic.ListView):
 
         if name:
             return self.queryset.filter(
-                name_icontains=name
+                name__icontains=name
             )
 
         return self.queryset

@@ -6,16 +6,17 @@
 
   <br>
 
-  <h1>{{ habit.name }}</h1>
-
-  <a href="{% url "tracker:habit-update" pk=habit.id %}" class="btn btn-secondary">
-    Update
-  </a>
-  <a href="{% url "tracker:habit-delete" pk=habit.id %}" class="btn btn-danger">
-    Delete
-  </a>
-  <br><br>
+  <div class="d-flex align-items-center">
+    <h1 class="mr-3">{{ habit.name }}</h1>
+    <a href="{% url 'tracker:habit-update' pk=habit.id %}" class="btn btn-secondary mr-2">
+      ✏️
+    </a>
+    <a href="{% url 'tracker:habit-delete' pk=habit.id %}" class="btn btn-danger">
+      🗑️
+    </a>
+  </div>
   (start - {{ habit.created_at }})
+  <br><br>
   <h4>description:</h4>{{ habit.description }}
   <h3>month goal:</h3> {{ habit.month_goal }}
 {#  <h2>Today check:</h2> {{ habit_completions.get_status_display }}#}
@@ -35,7 +36,7 @@
 {#  !!!!!! {{ habit.habit_completions.all }}#}
 {# ------ #}
 {#  {% url "tracker:habit-completion-update" pk=habit.pk completion_pk=completion.pk %}#}
-
+<br><br>
 {% if habit.habit_completions.all %}
   <h2>Completion history:</h2>
   {% for completion in habit.habit_completions.all %}
