@@ -234,6 +234,21 @@ class HabitCreateView(generic.CreateView):
         return super().form_valid(form)
 
 
+class HabitDeleteView(generic.DeleteView):
+    model = Habit
+    template_name = "habit/habit_confirm_delete.html"
+    success_url = reverse_lazy("tracker:habit-list")
+
+
+class HabitUpdateView(generic.UpdateView):
+    model = Habit
+    fields = "__all__"
+    template_name = "habit/habit_form.html"
+
+    def get_success_url(self):
+        return reverse("tracker:habit-detail", kwargs={"pk": self.kwargs["pk"]})
+
+
 class HabitDetailView(generic.DetailView):
     model = Habit
     template_name = "habit/habit_detail.html"

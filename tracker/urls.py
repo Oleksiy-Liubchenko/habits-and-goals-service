@@ -18,7 +18,7 @@ from tracker.views import (
     goal_toggle_status,
     goal_toggle_status_abandoned,
     GoalActiveListView,
-    GoalCompletedListView, GoalAbandonedListView
+    GoalCompletedListView, GoalAbandonedListView, HabitDeleteView, HabitUpdateView
     # HabitDayCompletionUpdateView
 )
 
@@ -110,6 +110,16 @@ urlpatterns = [
         "habits/create/",
         HabitCreateView.as_view(),
         name="habit-create"
+    ),
+    path(
+        "habits/<int:pk>/delete/",
+        HabitDeleteView.as_view(),
+        name="habit-delete"
+    ),
+    path(
+        "habits/<int:pk>/update/",
+        HabitUpdateView.as_view(),
+        name="habit-update"
     ),
     path(
         "habits/<int:pk>/",

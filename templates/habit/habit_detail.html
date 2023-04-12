@@ -7,6 +7,14 @@
   <br>
 
   <h1>{{ habit.name }}</h1>
+
+  <a href="{% url "tracker:habit-update" pk=habit.id %}" class="btn btn-secondary">
+    Update
+  </a>
+  <a href="{% url "tracker:habit-delete" pk=habit.id %}" class="btn btn-danger">
+    Delete
+  </a>
+  <br><br>
   (start - {{ habit.created_at }})
   <h4>description:</h4>{{ habit.description }}
   <h3>month goal:</h3> {{ habit.month_goal }}
