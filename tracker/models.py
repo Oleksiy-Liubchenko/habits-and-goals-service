@@ -45,6 +45,9 @@ class GoalStage(models.Model):
         default="active"
     )
 
+    class Meta:
+        ordering = ["-status", "deadline"]
+
 
 class Habit(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE, related_name='habits')

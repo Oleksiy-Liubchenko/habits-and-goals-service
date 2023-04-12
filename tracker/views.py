@@ -52,6 +52,7 @@ class GoalListView(generic.ListView):
     context_object_name = "goal_list"
     paginate_by = 5
     queryset = Goal.objects.all()
+    ordering = ["created_at"]
 
     def get_context_data(self, *, object_list=None, **kwargs):
         context = super(GoalListView, self).get_context_data(**kwargs)
