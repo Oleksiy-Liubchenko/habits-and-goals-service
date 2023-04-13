@@ -43,6 +43,7 @@ def index(request):
         "abandoned_goals_percent": abandoned_goals_percent,
         "habits_number": habits_number,
         "habits_objects": habits_objects,
+        "total_goals_number": total_goals_number
     }
 
     return render(request, "index.html", context=context)

@@ -1,87 +1,68 @@
 {% extends "base.html" %}
 
 {% block content %}
-  <h1>index.html</h1>
-  <h3>Goals progress:</h3>
 
-  <div style="display: flex; align-items: center;">
-    <p style="margin-right: 10px;">
-      {{ active_goals_number }}
-      <a href="{% url "tracker:goal-list-active" %}">
-        Active Goals
-      </a>
-    </p>
-
-    <div class="progress" style="width: 10%;">
-      <div class="progress-bar" role="progressbar" style="width: {{ active_goals_percent }}%;"
-           aria-valuenow="50" aria-valuemin="0" aria-valuemax="100">
-        {{ active_goals_percent }}%
+  <h1>You have {{ total_goals_number }} goals:</h1>
+  <br>
+  <div class="goal-container">
+    <div class="goal">
+      <p class="goal-title">
+        Active Goals:
+        <a href="{% url "tracker:goal-list-active" %}">View all({{ active_goals_number }})</a>
+      </p>
+      <div class="progress-bar-container">
+        <div class="progress-bar" style="width: {{ active_goals_percent }}%;">
+          {{ active_goals_percent }}%
+        </div>
       </div>
     </div>
-  </div>
 
-   <div style="display: flex; align-items: center;">
-    <p style="margin-right: 10px;">
-      {{ abandoned_goals_number }}
-      <a href="{% url "tracker:goal-list-abandoned" %}">
-        Abandon goals
-      </a>
-    </p>
-
-    <div class="progress" style="width: 10%;">
-      <div class="progress-bar" role="progressbar" style="width: {{ abandoned_goals_percent }}%;"
-           aria-valuenow="50" aria-valuemin="0" aria-valuemax="100">
-        {{ abandoned_goals_percent }}%
-      </div>
+<div class="goal">
+  <p class="goal-title">
+    Abandoned Goals:
+    <a href="{% url "tracker:goal-list-abandoned" %}">View all({{ abandoned_goals_number }})</a>
+  </p>
+  <div class="progress-bar-container">
+    <div class="progress-bar" style="width: {{ abandoned_goals_percent }}%;">
+      {{ abandoned_goals_percent }}%
     </div>
   </div>
+</div>
 
-  <div style="display: flex; align-items: center;">
-    <p style="margin-right: 10px;">
-      {{ completed_goals_number }}
-      <a href="{% url "tracker:goal-list-completed" %}">
-       Complete goals
-      </a>
-    </p>
-
-    <div class="progress" style="width: 10%;">
-      <div class="progress-bar" role="progressbar" style="width: {{ completed_goals_percent }}%;"
-           aria-valuenow="50" aria-valuemin="0" aria-valuemax="100">
-        {{ completed_goals_percent }}%
-      </div>
+<div class="goal">
+  <p class="goal-title">
+    Completed Goals:
+    <a href="{% url "tracker:goal-list-completed" %}">View all({{ completed_goals_number }})</a>
+  </p>
+  <div class="progress-bar-container">
+    <div class="progress-bar" style="width: {{ completed_goals_percent }}%;">
+      {{ completed_goals_percent }}%
     </div>
   </div>
+</div>
+  </div>
+  <br><br>
 
-
-
-  <h3>Habit progress:</h3>
-    <p>
-      {{ habits_number }}
-      <a href="{% url "tracker:habit-list" %}">
-        Habits:
-      </a>
-    </p>
-
-
+  <h1>You have {{ habits_number }} Habits:</h1>
+  <br>
   <table class="table table-bordered table-striped">
-  <thead>
-    <tr>
-      <th>Name</th>
-      <th>Description</th>
-      <th>Month Goal</th>
-      <th>Start date</th>
-    </tr>
-  </thead>
-  <tbody>
-    {% for habit in habits_objects %}
-    <tr>
-      <td><a href="{% url "tracker:habit-detail" pk=habit.pk %}">{{ habit.name }}</a></td>
-      <td>{{ habit.description }}</td>
-      <td>{{ habit.month_goal }}</td>
-      <td>{{ habit.created_at }}</td>
-    </tr>
-    {% endfor %}
-  </tbody>
-</table>
-
-{% endblock content %}
+    <thead>
+      <tr>
+        <th>Name</th>
+        <th>Description</th>
+        <th>Month Goal</th>
+        <th>Start date</th>
+      </tr>
+    </thead>
+    <tbody>
+      {% for habit in habits_objects %}
+      <tr>
+        <td><a href="{% url "tracker:habit-detail" pk=habit.pk %}">{{ habit.name }}</a></td>
+        <td>{{ habit.description }}</td>
+        <td>{{ habit.month_goal }}</td>
+        <td>{{ habit.created_at }}</td>
+      </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+{% endblock %}
