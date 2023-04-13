@@ -2,28 +2,34 @@
 {% load crispy_forms_filters %}
 
 {% block content%}
+  <div class="d-flex justify-content-center align-items-center flex-column">
+  <h1 class="text-center mb-5">Habit List</h1>
 
-  <form action="" method="get" class="form-inline">
+<form action="" method="get">
+  <div class="form-group">
+    <div class="input-group">
       {{ search_form|crispy }}
-      <input type="submit" value="🔍" class="btn btn-primary">
-    </form>
-  <br>
+      <div class="input-group-append">
+        <button type="submit" class="btn btn-primary">🔍</button>
+      </div>
+    </div>
+  </div>
+</form>
 
-  <h1>Goal_list</h1>
-  <a href="{% url 'tracker:habit-create' %}">
-    Create
+  <a href="{% url 'tracker:habit-create' %}" class="btn btn-primary mb-3">
+    Create a new habit
   </a>
-    <br>
-  <ul>
-  <h1>Habits:</h1>
+  </div>
+
+{#  <h1>Habits:</h1>#}
+ <ul class="list-unstyled">
   {% for habit in habit_list %}
-      <li>
-        <a href="{% url "tracker:habit-detail" pk=habit.id %}">
-          name: {{ habit.name }}
-        </a>
-      </li>
-      description: {{ habit.description }}
-    <br>
+    <li class="border rounded p-3 mb-3">
+      <div class="d-flex justify-content-between align-items-center">
+        <h3 class="m-0"><a href="{% url "tracker:habit-detail" pk=habit.id %}" class="text-decoration-none">{{ habit.name }}</a></h3>
+      </div>
+      <p class="mt-3">{{ habit.description }}</p>
+    </li>
   {% endfor %}
-  </ul>
+</ul>
 {% endblock %}
