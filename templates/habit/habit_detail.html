@@ -1,114 +1,126 @@
 {% extends "base.html" %}
 {% load crispy_forms_filters %}
 
-{% block content%}
+{% block content %}
 
-  <h1>Habit detail</h1>
-
-  <br>
-
-  <div class="d-flex align-items-center">
-    <h1 class="mr-3">{{ habit.name }}</h1>
-    <a href="{% url 'tracker:habit-update' pk=habit.id %}" class="btn btn-secondary mr-2">
-      ✏️
-    </a>
-    <a href="{% url 'tracker:habit-delete' pk=habit.id %}" class="btn btn-danger">
-      🗑️
-    </a>
-  </div>
-  (start - {{ habit.created_at }})
-  <br><br>
-  <h4>description:</h4>{{ habit.description }}
-  <h3>month goal:</h3> {{ habit.month_goal }}
-{#  <h2>Today check:</h2> {{ habit_completions.get_status_display }}#}
-  <br>
-
-  {% if not completion_status_today %}
-  <form method="POST">
-    {% csrf_token %}
-    <div class="form-check">
-      {{ day_completion_form.as_p }}
+<div class="card bg-light p-4 border border-secondary">
+  <div class="card-body">
+    <div class="d-flex align-items-center mb-3">
+      <h1 class="mr-3">{{ habit.name }}</h1>
+      <a href="{% url 'tracker:habit-update' pk=habit.id %}" class="btn btn-outline-secondary btn-sm mr-2">
+        ✏️ Edit
+      </a>
+      <a href="{% url 'tracker:habit-delete' pk=habit.id %}" class="btn btn-outline-danger btn-sm">
+        🗑️ Delete
+      </a>
     </div>
-    <button type="submit" class="btn btn-primary">Submit</button>
-  </form>
-  {% endif %}
-
-  {# ------ #}
-{#  !!!!!! {{ habit.habit_completions.all }}#}
-{# ------ #}
-{#  {% url "tracker:habit-completion-update" pk=habit.pk completion_pk=completion.pk %}#}
-<br><br>
-{% if habit.habit_completions.all %}
-  <h2>Completion history:</h2>
-  {% for completion in habit.habit_completions.all %}
-{#  <a href="{% url "tracker:habit-completion-update" pk=habit.pk completion_pk=completion.pk %}" class="btn btn-primary">#}
-{#    Update today status#}
-{#  </a>#}
-{% endfor %}
-  <br><br>
-    total days from start = {{ total_days }}
-    <br>
-    days complete = {{ completed_days }}
-    <br>
-    days ignored = {{ ignored_days }}
-    <br>
-    days pass = {{ not_completed_days }}
-    <br>
-    focus % = {{ progress_percent }}  %
-  <div style="display: flex; align-items: center;">
-    <p style="margin-right: 10px;">
-    </p>
-
-    <div class="progress" style="width: 20%;">
-      <div class="progress-bar" role="progressbar" style="width: {{ progress_percent }}%;"
-           aria-valuenow="50" aria-valuemin="0" aria-valuemax="100">
-        {{ progress_percent }}%
-      </div>
+    <p class="mb-4"><strong>Start:</strong> {{ habit.created_at }}</p>
+    <h4 class="mb-3">Description:</h4>
+    <p>{{ habit.description }}</p>
+    <h3 class="mt-5 mb-3">Monthly Goal:</h3>
+    <div class="d-flex align-items-center">
+      <i class="bi bi-check2-square fs-3 text-success mr-3"></i>
+      <p class="mb-0">{{ habit.month_goal }}</p>
     </div>
   </div>
+</div>
 
-    <br>
-  <ul>
-    {% regroup habit.habit_completions.all by complete_date|date:"Y-m-d" as completion_grouped %}
-    {% for group in completion_grouped %}
-      {% with group.list|last as completion %}
-        <li>
-          {{ completion.complete_date }} - {{ completion.get_status_display }}
-
-        </li>
-      {% endwith %}
-    {% endfor %}
-  </ul>
-{% endif %}
-
-
-  <br><br><br>
-<div class="row">
-  <div class="col-md-6">
-    <h3>Leave a Comment</h3>
-    <form method="POST" action="{% url 'tracker:habit-commentary-create' pk=habit.pk %}" class="form">
+{% if not completion_status_today %}
+<div class="card mt-5">
+  <div class="card-body">
+    <h5 class="card-title">Complete Today's Task</h5>
+    <form method="POST">
       {% csrf_token %}
       <div class="form-group">
-        {{ commentary_form.text|as_crispy_field }}
+        {{ day_completion_form.as_p }}
       </div>
       <button type="submit" class="btn btn-primary">Submit</button>
     </form>
   </div>
-  <div class="col-md-6">
-    <h3>Comment Zone:</h3>
-    <ul class="list-group">
-      {% for comment in habit_commentaries %}
-        <li class="list-group-item">
-          <h4>{{ comment.text }}</h4>
-          <small>(Comment by: {{ comment.user }} at {{ comment.created_at.time }} {{ comment.created_at.date }})</small>
-        </li>
-      {% empty %}
-        <li class="list-group-item">No comments yet.</li>
-      {% endfor %}
-    </ul>
-  </div>
 </div>
-{% endblock %}
+{% endif %}
+  <br><br>
+  <div class="row">
+  <div class="col-md-6">
+    {% if habit.habit_completions.all %}
+      <div class="mt-3">
+        <table class="table table-bordered" style="width: 80%;">
+          <thead class="thead-dark" style="background-color: #C0C0C0;">
+            <tr>
+              <th colspan="2"><h2>Completion history:</h2></th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>Total days from start</td>
+              <td>{{ total_days }}</td>
+            </tr>
+            <tr>
+              <td>Days completed</td>
+              <td>{{ completed_days }}</td>
+            </tr>
+            <tr>
+              <td>Days ignored</td>
+              <td>{{ ignored_days }}</td>
+            </tr>
+            <tr>
+              <td>Days passed</td>
+              <td>{{ not_completed_days }}</td>
+            </tr>
+            <tr>
+              <td>Focus %</td>
+              <td>{{ progress_percent }}%</td>
+            </tr>
+          </tbody>
+        </table>
+        <div class="progress" style="height: 20px; width: 30%;">
+          <div class="progress-bar bg-success" role="progressbar" style="width: {{ progress_percent }}%;"
+               aria-valuenow="{{ progress_percent }}" aria-valuemin="0" aria-valuemax="100">
+            <span class="sr-only">{{ progress_percent }}% focus</span>
+          </div>
+        </div>
+      </div>
+    {% endif %}
+
+        <br>
+      <ul>
+        {% regroup habit.habit_completions.all by complete_date|date:"Y-m-d" as completion_grouped %}
+        {% for group in completion_grouped %}
+          {% with group.list|last as completion %}
+            <li>
+              {{ completion.complete_date }} - {{ completion.get_status_display }}
+
+            </li>
+          {% endwith %}
+        {% endfor %}
+      </ul>
+
+
+      </div>
+      <div class="col-md-6">
+        <h3>Leave a Comment</h3>
+        <form method="POST" action="{% url 'tracker:habit-commentary-create' pk=habit.pk %}" class="form">
+          {% csrf_token %}
+          <div class="form-group">
+            {{ commentary_form.text|as_crispy_field }}
+          </div>
+          <button type="submit" class="btn btn-primary">Submit</button>
+        </form>
+
+        <h3>Comment Zone:</h3>
+        <ul class="list-group">
+          {% for comment in habit_commentaries %}
+            <li class="list-group-item">
+              <h4>{{ comment.text }}</h4>
+              <small>(Comment by: {{ comment.user }} at {{ comment.created_at.time }} {{ comment.created_at.date }})</small>
+            </li>
+          {% empty %}
+            <li class="list-group-item">No comments yet.</li>
+          {% endfor %}
+        </ul>
+  </div>
+  </div>
+ {% endblock %}
 {#  <form method="POST" action="{% url 'tracker:habit-commentary-create' pk=habit.pk %}" >#}
 {#    {% csrf_token %}#}
 {#    {{ commentary_form|crispy }}#}
