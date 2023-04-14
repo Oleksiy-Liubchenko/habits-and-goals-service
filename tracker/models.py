@@ -100,27 +100,6 @@ class HabitDayCompletion(models.Model):
     )
 
 
-class Note(models.Model):
-    user = models.ForeignKey(
-        User,
-        on_delete=models.CASCADE,
-        related_name="notes"
-    )
-    text = models.TextField()
-    goals = models.ForeignKey(
-        Goal,
-        on_delete=models.CASCADE,
-        related_name="notes"
-    )
-    habits = models.ForeignKey(
-        Habit,
-        on_delete=models.CASCADE,
-        related_name="notes"
-    )
-    created_at = models.DateTimeField(auto_now_add=True)
-    updated_at = models.DateTimeField(auto_now=True)
-
-
 class Commentary(models.Model):
     user = models.ForeignKey(
         User,

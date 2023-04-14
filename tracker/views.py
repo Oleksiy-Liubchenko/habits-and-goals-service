@@ -393,10 +393,6 @@ class HabitDetailView(LoginRequiredMixin, generic.DetailView):
         return redirect("tracker:habit-detail", pk=habit.pk)
 
 
-class NoteCreateView(generic.CreateView):
-    pass
-
-
 class CommentaryGoalCreateView(LoginRequiredMixin, generic.CreateView):
     model = Commentary
     form_class = GoalCommentaryForm
