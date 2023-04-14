@@ -54,3 +54,12 @@ text-align: left;
   background-color: grey;
   font-weight: bold;
 }
+
+.habit-statistic {
+  margin-left: 20px;
+  margin-right: 20px;
+}
+
+.commentary-form {
+  border-radius: 30px;
+}

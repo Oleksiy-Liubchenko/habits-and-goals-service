@@ -41,7 +41,7 @@ class GoalCommentaryForm(forms.ModelForm):
         model = Commentary
         fields = ["text"]
         widgets = {
-            'text': forms.Textarea(attrs={'cols': 40, 'rows': 2}),
+            'text': forms.Textarea(attrs={'cols': 40, 'rows': 2, 'class': 'commentary-form'}),
         }
 
 
@@ -69,7 +69,7 @@ class HabitCommentaryForm(forms.ModelForm):
         model = Commentary
         fields = ["text"]
         widgets = {
-            'text': forms.Textarea(attrs={'cols': 40, 'rows': 2}),
+            'text': forms.Textarea(attrs={'cols': 40, 'rows': 2, 'class': 'commentary-form'}),
         }
 
 
