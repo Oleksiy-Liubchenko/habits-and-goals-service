@@ -1,8 +1,10 @@
 {% extends "base.html" %}
 
 {% block content %}
-
+<div style="text-align: center;">
   <h1>You have {{ total_goals_number }} goals:</h1>
+</div>
+
   <br>
   <div class="goal-container">
     <div class="goal">
@@ -11,7 +13,7 @@
         <a href="{% url "tracker:goal-list-active" %}">View all({{ active_goals_number }})</a>
       </p>
       <div class="progress-bar-container">
-        <div class="progress-bar" style="width: {{ active_goals_percent }}%;">
+        <div class="progress-bar progress-bar-striped progress-bar-animated" style="width: {{ active_goals_percent }}%;">
           {{ active_goals_percent }}%
         </div>
       </div>
@@ -23,7 +25,7 @@
     <a href="{% url "tracker:goal-list-abandoned" %}">View all({{ abandoned_goals_number }})</a>
   </p>
   <div class="progress-bar-container">
-    <div class="progress-bar" style="width: {{ abandoned_goals_percent }}%;">
+    <div class="progress-bar progress-bar-striped progress-bar-animated" style="width: {{ abandoned_goals_percent }}%;">
       {{ abandoned_goals_percent }}%
     </div>
   </div>
@@ -35,7 +37,7 @@
     <a href="{% url "tracker:goal-list-completed" %}">View all({{ completed_goals_number }})</a>
   </p>
   <div class="progress-bar-container">
-    <div class="progress-bar" style="width: {{ completed_goals_percent }}%;">
+    <div class="progress-bar progress-bar-striped progress-bar-animated" style="width: {{ completed_goals_percent }}%;">
       {{ completed_goals_percent }}%
     </div>
   </div>
@@ -43,26 +45,30 @@
   </div>
   <br><br>
 
-  <h1>You have {{ habits_number }} Habits:</h1>
+ <div style="text-align: center;">
+  <h1>You have {{ habits_number }} habits:</h1>
+</div>
   <br>
-  <table class="table table-bordered table-striped">
-    <thead>
+<div class="table-responsive" style="width: 70%; margin: 0 auto;">
+  <table class="table table-bordered table-hover table-striped" style="margin: 0 auto;">
+    <thead class="bg-dark text-white">
       <tr>
         <th>Name</th>
         <th>Description</th>
         <th>Month Goal</th>
-        <th>Start date</th>
+        <th>Start Date</th>
       </tr>
     </thead>
     <tbody>
       {% for habit in habits_objects %}
       <tr>
-        <td><a href="{% url "tracker:habit-detail" pk=habit.pk %}">{{ habit.name }}</a></td>
+        <td><a href="{% url "tracker:habit-detail" pk=habit.pk %}" class="text-decoration-none">{{ habit.name }}</a></td>
         <td>{{ habit.description }}</td>
         <td>{{ habit.month_goal }}</td>
-        <td>{{ habit.created_at }}</td>
+        <td>{{ habit.created_at.date}}</td>
       </tr>
       {% endfor %}
     </tbody>
   </table>
+</div>
 {% endblock %}
