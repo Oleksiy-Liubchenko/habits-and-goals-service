@@ -1,24 +1,25 @@
 {% extends "base.html" %}
 
 {% block content%}
-  <h1>Goal_list</h1>
-  <a href="{% url 'tracker:goal-create' %}">
-    Create
-  </a>
-    <br>
-  <ul>
-  <h1>Active goals:</h1>
-  {% if goal_list_active %}
-    {% for goal in goal_list_active %}
-        <li>
-          <a href="{% url "tracker:goal-detail" pk=goal.id %}">
-            name: {{ goal.name }}
-          </a>
+
+  <h1 style="text-align: center">
+    Active goals:
+  </h1>
+
+   {% if goal_list_active %}
+    <ul class="list-unstyled">
+      {% for goal in goal_list_active %}
+        <li class="border rounded p-3 mb-3">
+          <div class="d-flex justify-content-between align-items-center">
+            <h3 class="m-0"><a href="{% url "tracker:goal-detail" pk=goal.id %}" class="text-decoration-none">{{ goal.name }}</a></h3>
+          </div>
+          <p class="mt-3">{{ goal.description }}</p>
+          <p class="mb-0"><strong>Deadline:</strong> {{ goal.deadline.date }}</p>
         </li>
-        description: {{ goal.description }}
-          <br>
-        deadline: {{ goal.deadline.date }}
-    {% endfor %}
+      {% endfor %}
     </ul>
+  {% else %}
+    <p>No goals found.</p>
   {% endif %}
+
 {% endblock %}
