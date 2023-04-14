@@ -1,4 +1,4 @@
-from django.urls import path, include
+from django.urls import path
 from tracker.views import (
     GoalListView,
     GoalCreateView,
@@ -10,19 +10,24 @@ from tracker.views import (
     NoteCreateView,
     CommentaryGoalCreateView,
     CommentaryHabitCreateView,
-    index,
     GoalDeleteView,
     GoalUpdateView,
     GoalStageUpdateView,
     GoalStageDeleteView,
+    GoalActiveListView,
+    GoalCompletedListView,
+    GoalAbandonedListView,
+    HabitDeleteView,
+    HabitUpdateView,
+    index,
+    goal_stage_toggle_status,
+    goal_stage_toggle_status_abandoned,
     goal_toggle_status,
     goal_toggle_status_abandoned,
-    GoalActiveListView,
-    GoalCompletedListView, GoalAbandonedListView, HabitDeleteView, HabitUpdateView, goal_stage_toggle_status,
-    goal_stage_toggle_status_abandoned
-    # HabitDayCompletionUpdateView
 )
 
+
+app_name = "tracker"
 
 urlpatterns = [
     path(
@@ -90,13 +95,8 @@ urlpatterns = [
     path(
         "goals/<int:goal_id>/update/stage/<int:pk>/",
         GoalStageUpdateView.as_view(),
-        name="goal-update-stage" # спросить у чата, что не так, как передавть еще пк айди ...
+        name="goal-update-stage"
     ),
-    # path(
-    #     "goals/<int:goal_id>/update/stage/",
-    #     GoalStageUpdateView.as_view(),
-    #     name="goal-update-stage"
-    # ),
     path(
         "goals/<int:goal_id>/delete/stage/<int:pk>/",
         GoalStageDeleteView.as_view(),
@@ -137,13 +137,6 @@ urlpatterns = [
         HabitDetailView.as_view(),
         name="habit-detail"
     ),
-    # path(
-    #     "habits/<int:pk>/completion/<int:completion_pk>/update/",
-    #     HabitDayCompletionUpdateView.as_view(),
-    #     name="habit-completion-update"
-    # ),
-
-    # add update view. do not forget
     path(
         "habits/<int:pk>/create/note/",
         NoteCreateView.as_view(),
@@ -165,5 +158,3 @@ urlpatterns = [
         name="goal-commentary-create"
     ),
 ]
-
-app_name = "tracker"

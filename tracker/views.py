@@ -3,33 +3,52 @@ from datetime import date
 from django.contrib import messages
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.mixins import LoginRequiredMixin
-from django.http import HttpResponseRedirect
+from django.http import HttpResponseRedirect, HttpResponse, HttpRequest
 from django.shortcuts import render, get_object_or_404, redirect
 from django.urls import reverse_lazy, reverse
 from django.views import generic
 
-from tracker.forms import GoalCreationForm, GoalCreationStageForm, GoalCommentaryForm, HabitCreationForm, \
-    HabitCommentaryForm, HabitDayCompletionForm, GoalNameSearchForm, HabitNameSearchForm
+from tracker.forms import (
+    GoalCreationForm,
+    GoalCreationStageForm,
+    GoalCommentaryForm,
+    HabitCreationForm,
+    HabitCommentaryForm,
+    HabitDayCompletionForm,
+    GoalNameSearchForm,
+    HabitNameSearchForm
+)
 from tracker.models import (
     Goal,
     GoalStage,
     Habit,
-    Note,
     Commentary
 )
 
 
 @login_required
-def index(request):
+def index(request: HttpRequest) -> HttpResponse:
     user = request.user
-    active_goals_number = Goal.objects.filter(status="active", user=user).count()
-    completed_goals_number = Goal.objects.filter(status="completed", user=user).count()
-    abandoned_goals_number = Goal.objects.filter(status="abandoned", user=user).count()
+    active_goals_number = Goal.objects.filter(
+        status="active", user=user
+    ).count()
+    completed_goals_number = Goal.objects.filter(
+        status="completed", user=user
+    ).count()
+    abandoned_goals_number = Goal.objects.filter(
+        status="abandoned", user=user
+    ).count()
     total_goals_number = Goal.objects.filter(user=user).count()
 
-    active_goals_percent = round(active_goals_number / total_goals_number * 100, 1)
-    completed_goals_percent = round(completed_goals_number / total_goals_number * 100, 1)
-    abandoned_goals_percent = round(abandoned_goals_number / total_goals_number * 100, 1)
+    active_goals_percent = round(
+        active_goals_number / total_goals_number * 100, 1
+    )
+    completed_goals_percent = round(
+        completed_goals_number / total_goals_number * 100, 1
+    )
+    abandoned_goals_percent = round(
+        abandoned_goals_number / total_goals_number * 100, 1
+    )
 
     habits_number = Habit.objects.filter(user=user).count()
     habits_objects = Habit.objects.filter(user=user)
@@ -128,7 +147,7 @@ class GoalUpdateView(LoginRequiredMixin, generic.UpdateView):
     fields = "__all__"
     template_name = "goal/goal_form.html"
 
-    def get_success_url(self):
+    def get_success_url(self) -> HttpResponse:
         return reverse("tracker:goal-detail", kwargs={"pk": self.kwargs["pk"]})
 
 
@@ -160,7 +179,7 @@ class GoalCreateView(LoginRequiredMixin, generic.CreateView):
     template_name = "goal/goal_form.html"
     success_url = reverse_lazy("tracker:goal-list")
     form_class = GoalCreationForm
-    
+
     def form_valid(self, form):
         form.instance.user = self.request.user
         return super().form_valid(form)
@@ -172,8 +191,8 @@ class GoalDetailView(LoginRequiredMixin, generic.DetailView):
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        context['goal_stages'] = self.object.stages.all()
-        context['goal_commentaries'] = self.object.commentaries.all()
+        context["goal_stages"] = self.object.stages.all()
+        context["goal_commentaries"] = self.object.commentaries.all()
         context["form"] = GoalCommentaryForm
         return context
 
@@ -187,8 +206,11 @@ class GoalStageCreateView(LoginRequiredMixin, generic.CreateView):
         form.instance.goal_id = self.kwargs["goal_id"]
         return super().form_valid(form)
 
-    def get_success_url(self):
-        return reverse("tracker:goal-detail", kwargs={"pk": self.kwargs["goal_id"]})
+    def get_success_url(self) -> HttpResponse:
+        return reverse(
+            "tracker:goal-detail",
+            kwargs={"pk": self.kwargs["goal_id"]}
+        )
 
 
 class GoalStageDeleteView(LoginRequiredMixin, generic.DeleteView):
@@ -196,8 +218,11 @@ class GoalStageDeleteView(LoginRequiredMixin, generic.DeleteView):
     template_name = "goal/goalstage_confirm_delete.html"
     success_url = reverse_lazy("tracker:goal-list")
 
-    def get_success_url(self):
-        return reverse("tracker:goal-detail", kwargs={"pk": self.kwargs["goal_id"]})
+    def get_success_url(self) -> HttpResponse:
+        return reverse(
+            "tracker:goal-detail",
+            kwargs={"pk": self.kwargs["goal_id"]}
+        )
 
 
 class GoalStageUpdateView(LoginRequiredMixin, generic.UpdateView):
@@ -206,23 +231,36 @@ class GoalStageUpdateView(LoginRequiredMixin, generic.UpdateView):
     template_name = "goal/goalstage_form.html"
     success_url = reverse_lazy("tracker:goal-list")
 
-    def get_success_url(self):
-        return reverse("tracker:goal-detail", kwargs={"pk": self.kwargs["goal_id"]})
+    def get_success_url(self) -> HttpResponse:
+        return reverse(
+            "tracker:goal-detail",
+            kwargs={"pk": self.kwargs["goal_id"]}
+        )
 
 
 @login_required
-def goal_stage_toggle_status(request, goal_id, pk):
+def goal_stage_toggle_status(request, goal_id, pk) -> HttpResponseRedirect:
     goal_stage = get_object_or_404(GoalStage, pk=pk)
     if goal_stage.status == "active":
         goal_stage.status = "completed"
     else:
         goal_stage.status = "active"
     goal_stage.save()
-    return HttpResponseRedirect(reverse_lazy("tracker:goal-detail", args=[goal_id]))
+    return HttpResponseRedirect(
+        reverse_lazy(
+            "tracker:goal-detail",
+            args=[goal_id]
+        )
+    )
 
 
 @login_required
-def goal_stage_toggle_status_abandoned(request, goal_id, pk):
+def goal_stage_toggle_status_abandoned(
+        request,
+        goal_id,
+        pk
+) -> HttpResponseRedirect:
+
     goal_stage = get_object_or_404(GoalStage, pk=pk)
     if goal_stage.status == "abandoned":
         goal_stage.status = "active"
@@ -230,7 +268,12 @@ def goal_stage_toggle_status_abandoned(request, goal_id, pk):
         goal_stage.status = "abandoned"
     goal_stage.save()
 
-    return HttpResponseRedirect(reverse_lazy("tracker:goal-detail", args=[goal_id]))
+    return HttpResponseRedirect(
+        reverse_lazy(
+            "tracker:goal-detail",
+            args=[goal_id]
+        )
+    )
 
 
 class HabitListView(LoginRequiredMixin, generic.ListView):
@@ -286,8 +329,11 @@ class HabitUpdateView(LoginRequiredMixin, generic.UpdateView):
     fields = "__all__"
     template_name = "habit/habit_form.html"
 
-    def get_success_url(self):
-        return reverse("tracker:habit-detail", kwargs={"pk": self.kwargs["pk"]})
+    def get_success_url(self) -> HttpResponse:
+        return reverse(
+            "tracker:habit-detail",
+            kwargs={"pk": self.kwargs["pk"]}
+        )
 
 
 class HabitDetailView(LoginRequiredMixin, generic.DetailView):
@@ -301,12 +347,33 @@ class HabitDetailView(LoginRequiredMixin, generic.DetailView):
         context["day_completion_form"] = HabitDayCompletionForm()
         total_days = (date.today() - self.object.created_at.date()).days
         context["total_days"] = total_days + 1
-        context["completed_days"] = self.object.habit_completions.filter(status="completed").count()
-        context["completion_status_today"] = self.object.habit_completions.filter(complete_date=date.today()).first()
-        context["not_completed_days"] = self.object.habit_completions.filter(status="not_completed").count()
-        context["ignored_days"] = context["total_days"] - (context["completed_days"] + context["not_completed_days"])
-        context["update_completion_form"] = HabitDayCompletionForm(instance=context["completion_status_today"]) if context["completion_status_today"] else None
-        context["progress_percent"] = round(100 * (context["completed_days"] / context["total_days"]), 2) if context["total_days"] else 0
+        context["completed_days"] = self.object.habit_completions.filter(
+            status="completed"
+        ).count()
+
+        status = self.object.habit_completions
+        context["completion_status_today"] = status.filter(
+            complete_date=date.today()
+        ).first()
+
+        context["not_completed_days"] = self.object.habit_completions.filter(
+            status="not_completed"
+        ).count()
+
+        context["ignored_days"] = (
+            context["total_days"]
+            - (context["completed_days"]
+               + context["not_completed_days"])
+        )
+
+        context["update_completion_form"] = HabitDayCompletionForm(
+            instance=context["completion_status_today"]
+        ) if context["completion_status_today"] else None
+
+        context["progress_percent"] = round(
+            100 * (context["completed_days"] / context["total_days"]), 2
+        ) if context["total_days"] else 0
+
         return context
 
     def post(self, request, *args, **kwargs):
@@ -320,9 +387,10 @@ class HabitDetailView(LoginRequiredMixin, generic.DetailView):
             completion.save()
             messages.success(
                 request,
-                f"Habit '{habit.name}' marked as '{completion.get_status_display()}' for today."
+                f"Habit '{habit.name}' marked as "
+                f"'{completion.get_status_display()}' for today."
             )
-        return redirect('tracker:habit-detail', pk=habit.pk)
+        return redirect("tracker:habit-detail", pk=habit.pk)
 
 
 class NoteCreateView(generic.CreateView):
@@ -346,10 +414,18 @@ class CommentaryGoalCreateView(LoginRequiredMixin, generic.CreateView):
         commentary.save()
         commentary.goals.add(goal)
         commentary.save()
-        return HttpResponseRedirect(reverse_lazy("tracker:goal-detail", kwargs={"pk": self.kwargs["pk"]}))
+        return HttpResponseRedirect(
+            reverse_lazy(
+                "tracker:goal-detail",
+                kwargs={"pk": self.kwargs["pk"]}
+            )
+        )
 
-    def get_success_url(self):
-        return reverse_lazy("tracker:goal-detail", kwargs={"pk": self.kwargs["pk"]})
+    def get_success_url(self) -> HttpResponse:
+        return reverse_lazy(
+            "tracker:goal-detail",
+            kwargs={"pk": self.kwargs["pk"]}
+        )
 
 
 class CommentaryHabitCreateView(LoginRequiredMixin, generic.CreateView):
@@ -362,14 +438,22 @@ class CommentaryHabitCreateView(LoginRequiredMixin, generic.CreateView):
         context["habit_id"] = self.kwargs["pk"]
         return context
 
-    def form_valid(self, form):
+    def form_valid(self, form) -> HttpResponseRedirect:
         habit = Habit.objects.get(pk=self.kwargs["pk"])
         commentary = form.save(commit=False)
         commentary.user = self.request.user
         commentary.save()
         commentary.habits.add(habit)
         commentary.save()
-        return HttpResponseRedirect(reverse_lazy("tracker:habit-detail", kwargs={"pk": self.kwargs["pk"]}))
+        return HttpResponseRedirect(
+            reverse_lazy(
+                "tracker:habit-detail",
+                kwargs={"pk": self.kwargs["pk"]}
+            )
+        )
 
-    def get_success_url(self):
-        return reverse_lazy("tracker:habit-detail", kwargs={"pk": self.kwargs["pk"]})
+    def get_success_url(self) -> HttpResponse:
+        return reverse_lazy(
+            "tracker:habit-detail",
+            kwargs={"pk": self.kwargs["pk"]}
+        )
