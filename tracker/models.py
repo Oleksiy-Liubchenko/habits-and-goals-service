@@ -29,6 +29,9 @@ class Goal(models.Model):
         default="active"
     )
 
+    def __str__(self):
+        return self.name
+
 
 class GoalStage(models.Model):
     goal = models.ForeignKey(
@@ -95,9 +98,6 @@ class HabitDayCompletion(models.Model):
         choices=STATUS_CHOICE,
         default="not_completed"
     )
-
-    def __str__(self) -> str:
-        return self.habit
 
 
 class Note(models.Model):
