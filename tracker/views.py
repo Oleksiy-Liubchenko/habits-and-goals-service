@@ -1,6 +1,5 @@
 from datetime import date
 
-from django.contrib import messages
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.http import HttpResponseRedirect, HttpResponse, HttpRequest
@@ -385,11 +384,6 @@ class HabitDetailView(LoginRequiredMixin, generic.DetailView):
             completion.habit = habit
             completion.complete_date = date.today()
             completion.save()
-            messages.success(
-                request,
-                f"Habit '{habit.name}' marked as "
-                f"'{completion.get_status_display()}' for today."
-            )
         return redirect("tracker:habit-detail", pk=habit.pk)
 
 
