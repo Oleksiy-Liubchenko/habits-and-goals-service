@@ -64,7 +64,6 @@ urlpatterns = [
         GoalDetailView.as_view(),
         name="goal-detail"
     ),
-    # ? slash in end delete + update
     path(
         "goals/<int:pk>/delete",
         GoalDeleteView.as_view(),
@@ -85,7 +84,6 @@ urlpatterns = [
         goal_toggle_status_abandoned,
         name="goal-update-status-abandoned"
     ),
-    # add update view. do not forget
     path(
         "goals/<int:goal_id>/create/stage/",
         GoalStageCreateView.as_view(),
@@ -110,6 +108,11 @@ urlpatterns = [
         "goals/<int:goal_id>/toggle/<int:pk>/abandoned/",
         goal_stage_toggle_status_abandoned,
         name="goal-update-stage-status-abandoned"
+    ),
+    path(
+        "goals/<int:pk>/create/commentary/",
+        CommentaryGoalCreateView.as_view(),
+        name="goal-commentary-create"
     ),
     path(
         "habits/",
@@ -140,10 +143,5 @@ urlpatterns = [
         "habits/<int:pk>/create/commentary/",
         CommentaryHabitCreateView.as_view(),
         name="habit-commentary-create"
-    ),
-    path(
-        "goals/<int:pk>/create/commentary/",
-        CommentaryGoalCreateView.as_view(),
-        name="goal-commentary-create"
     ),
 ]

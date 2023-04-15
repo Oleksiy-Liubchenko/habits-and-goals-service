@@ -72,8 +72,12 @@ class PrivateGoalListViews(TestCase):
         )
         self.assertTemplateUsed(response, "goal/goal_list.html")
         self.assertTemplateUsed(response_active, "goal/goal_list_active.html")
-        self.assertTemplateUsed(response_completed, "goal/goal_list_completed.html")
-        self.assertTemplateUsed(response_abandoned, "goal/goal_list_abandoned.html")
+        self.assertTemplateUsed(
+            response_completed, "goal/goal_list_completed.html"
+        )
+        self.assertTemplateUsed(
+            response_abandoned, "goal/goal_list_abandoned.html"
+        )
 
     def test_context_data_goal(self):
         response = self.client.get(
@@ -141,9 +145,11 @@ class TestGoalAndGoalStageToggleStatus(TestCase):
         )
 
         self.assertEqual(response.status_code, 302)
-        self.assertEqual(response.url, reverse(
-            "tracker:goal-detail", args=[self.goal.pk])
-                         )
+        self.assertEqual(
+            response.url, reverse(
+                "tracker:goal-detail", args=[self.goal.pk]
+            )
+        )
         self.goal.refresh_from_db()
         self.assertEqual(self.goal.status, "completed")
 
@@ -155,9 +161,11 @@ class TestGoalAndGoalStageToggleStatus(TestCase):
         )
 
         self.assertEqual(response.status_code, 302)
-        self.assertEqual(response.url, reverse(
-            "tracker:goal-detail", args=[self.goal.pk])
-                         )
+        self.assertEqual(
+            response.url, reverse(
+                "tracker:goal-detail", args=[self.goal.pk]
+            )
+        )
         self.goal.refresh_from_db()
         self.assertEqual(self.goal.status, "abandoned")
 
@@ -166,7 +174,8 @@ class TestGoalAndGoalStageToggleStatus(TestCase):
 
         response = self.client.post(
             reverse(
-                "tracker:goal-update-stage-status", args=[self.goal.pk, self.goal_stage.pk]
+                "tracker:goal-update-stage-status",
+                args=[self.goal.pk, self.goal_stage.pk]
             )
         )
 
@@ -280,10 +289,15 @@ class TestCommentaryHabitCreateView(TestCase):
             "text": "This is a test commentary."
         }
         response = self.client.post(
-            reverse("tracker:habit-commentary-create", kwargs={"pk": self.habit.pk}),
+            reverse(
+                "tracker:habit-commentary-create", kwargs={"pk": self.habit.pk}
+            ),
             data=form_data
         )
-        self.assertRedirects(response, reverse("tracker:habit-detail", kwargs={"pk": self.habit.pk}))
+        self.assertRedirects(
+            response,
+            reverse("tracker:habit-detail", kwargs={"pk": self.habit.pk})
+        )
 
         commentary = Commentary.objects.first()
 
@@ -297,10 +311,15 @@ class TestCommentaryHabitCreateView(TestCase):
             "text": "This is a test commentary."
         }
         response = self.client.post(
-            reverse("tracker:goal-commentary-create", kwargs={"pk": self.habit.pk}),
+            reverse(
+                "tracker:goal-commentary-create", kwargs={"pk": self.habit.pk}
+            ),
             data=form_data
         )
-        self.assertRedirects(response, reverse("tracker:goal-detail", kwargs={"pk": self.goal.pk}))
+        self.assertRedirects(
+            response,
+            reverse("tracker:goal-detail", kwargs={"pk": self.goal.pk})
+        )
 
         commentary = Commentary.objects.first()
 
@@ -320,7 +339,9 @@ class HabitDetailViewTestCase(TestCase):
             description="This is a test habit",
             user=self.user
         )
-        self.url = reverse("tracker:habit-detail", kwargs={"pk": self.habit.pk})
+        self.url = reverse(
+            "tracker:habit-detail", kwargs={"pk": self.habit.pk}
+        )
 
     def test_habit_view_requires_login(self):
 

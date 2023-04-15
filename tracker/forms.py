@@ -34,7 +34,6 @@ class GoalCreationStageForm(forms.ModelForm):
         widgets = {"deadline": DateInput(attrs={"type": "date"})}
 
 
-# GoalCommentaryForm
 class GoalCommentaryForm(forms.ModelForm):
     class Meta:
         model = Commentary

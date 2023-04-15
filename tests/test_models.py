@@ -10,10 +10,10 @@ class ModelTest(TestCase):
     def setUpClass(cls):
         super().setUpClass()
         cls.user = get_user_model().objects.create_user(
-            username='test_user',
-            password='test_pass',
-            first_name='Test',
-            last_name='User'
+            username="test_user",
+            password="test_pass",
+            first_name="Test",
+            last_name="User"
         )
 
     def test_goal_format_str(self):
