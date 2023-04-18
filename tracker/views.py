@@ -5,7 +5,7 @@ from django.contrib.auth.mixins import LoginRequiredMixin
 from django.http import HttpResponseRedirect, HttpResponse, HttpRequest
 from django.shortcuts import render, get_object_or_404, redirect
 from django.urls import reverse_lazy, reverse
-from django.views import generic
+from django.views import generic, View
 
 from tracker.forms import (
     GoalCreationForm,
@@ -15,7 +15,7 @@ from tracker.forms import (
     HabitCommentaryForm,
     HabitDayCompletionForm,
     GoalNameSearchForm,
-    HabitNameSearchForm
+    HabitNameSearchForm,
 )
 from tracker.models import (
     Goal,
@@ -25,46 +25,46 @@ from tracker.models import (
 )
 
 
-@login_required
-def index(request: HttpRequest) -> HttpResponse:
-    user = request.user
-    active_goals_number = Goal.objects.filter(
-        status="active", user=user
-    ).count()
-    completed_goals_number = Goal.objects.filter(
-        status="completed", user=user
-    ).count()
-    abandoned_goals_number = Goal.objects.filter(
-        status="abandoned", user=user
-    ).count()
-    total_goals_number = Goal.objects.filter(user=user).count()
+class IndexView(LoginRequiredMixin, View):
+    def get(self, request):
+        user = request.user
+        active_goals_number = Goal.objects.filter(
+            status="active", user=user
+        ).count()
+        completed_goals_number = Goal.objects.filter(
+            status="completed", user=user
+        ).count()
+        abandoned_goals_number = Goal.objects.filter(
+            status="abandoned", user=user
+        ).count()
+        total_goals_number = Goal.objects.filter(user=user).count()
 
-    active_goals_percent = round(
-        active_goals_number / total_goals_number * 100, 1
-    )
-    completed_goals_percent = round(
-        completed_goals_number / total_goals_number * 100, 1
-    )
-    abandoned_goals_percent = round(
-        abandoned_goals_number / total_goals_number * 100, 1
-    )
+        active_goals_percent = round(
+            active_goals_number / total_goals_number * 100, 1
+        )
+        completed_goals_percent = round(
+            completed_goals_number / total_goals_number * 100, 1
+        )
+        abandoned_goals_percent = round(
+            abandoned_goals_number / total_goals_number * 100, 1
+        )
 
-    habits_number = Habit.objects.filter(user=user).count()
-    habits_objects = Habit.objects.filter(user=user)
+        habits_number = Habit.objects.filter(user=user).count()
+        habits_objects = Habit.objects.filter(user=user)
 
-    context = {
-        "active_goals_number": active_goals_number,
-        "completed_goals_number": completed_goals_number,
-        "abandoned_goals_number": abandoned_goals_number,
-        "active_goals_percent": active_goals_percent,
-        "completed_goals_percent": completed_goals_percent,
-        "abandoned_goals_percent": abandoned_goals_percent,
-        "habits_number": habits_number,
-        "habits_objects": habits_objects,
-        "total_goals_number": total_goals_number
-    }
+        context = {
+            "active_goals_number": active_goals_number,
+            "completed_goals_number": completed_goals_number,
+            "abandoned_goals_number": abandoned_goals_number,
+            "active_goals_percent": active_goals_percent,
+            "completed_goals_percent": completed_goals_percent,
+            "abandoned_goals_percent": abandoned_goals_percent,
+            "habits_number": habits_number,
+            "habits_objects": habits_objects,
+            "total_goals_number": total_goals_number
+        }
 
-    return render(request, "index.html", context=context)
+        return render(request, "index.html", context=context)
 
 
 class GoalListView(LoginRequiredMixin, generic.ListView):

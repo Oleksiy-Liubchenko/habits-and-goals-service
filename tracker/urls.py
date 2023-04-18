@@ -18,7 +18,7 @@ from tracker.views import (
     GoalAbandonedListView,
     HabitDeleteView,
     HabitUpdateView,
-    index,
+    IndexView,
     goal_stage_toggle_status,
     goal_stage_toggle_status_abandoned,
     goal_toggle_status,
@@ -31,7 +31,7 @@ app_name = "tracker"
 urlpatterns = [
     path(
         "",
-        index,
+        IndexView.as_view(),
         name="index"
     ),
     path(
