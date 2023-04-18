@@ -19,10 +19,10 @@ from tracker.views import (
     HabitDeleteView,
     HabitUpdateView,
     IndexView,
-    goal_stage_toggle_status,
-    goal_stage_toggle_status_abandoned,
-    goal_toggle_status,
-    goal_toggle_status_abandoned,
+    GoalToggleStatusView,
+    GoalToggleAbandonedStatusView,
+    GoalToggleStageStatusView,
+    GoalToggleStageAbandonedStatusView
 )
 
 
@@ -76,12 +76,12 @@ urlpatterns = [
     ),
     path(
         "goals/<int:pk>/toggle/",
-        goal_toggle_status,
+        GoalToggleStatusView.as_view(),
         name="goal-update-status"
     ),
     path(
         "goals/<int:pk>/toggle/abandoned/",
-        goal_toggle_status_abandoned,
+        GoalToggleAbandonedStatusView.as_view(),
         name="goal-update-status-abandoned"
     ),
     path(
@@ -101,12 +101,12 @@ urlpatterns = [
     ),
     path(
         "goals/<int:goal_id>/toggle/<int:pk>/",
-        goal_stage_toggle_status,
+        GoalToggleStageStatusView.as_view(),
         name="goal-update-stage-status"
     ),
     path(
         "goals/<int:goal_id>/toggle/<int:pk>/abandoned/",
-        goal_stage_toggle_status_abandoned,
+        GoalToggleStageAbandonedStatusView.as_view(),
         name="goal-update-stage-status-abandoned"
     ),
     path(

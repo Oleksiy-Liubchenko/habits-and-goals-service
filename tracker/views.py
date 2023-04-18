@@ -1,8 +1,7 @@
 from datetime import date
 
-from django.contrib.auth.decorators import login_required
 from django.contrib.auth.mixins import LoginRequiredMixin
-from django.http import HttpResponseRedirect, HttpResponse, HttpRequest
+from django.http import HttpResponseRedirect, HttpResponse
 from django.shortcuts import render, get_object_or_404, redirect
 from django.urls import reverse_lazy, reverse
 from django.views import generic, View
@@ -150,27 +149,30 @@ class GoalUpdateView(LoginRequiredMixin, generic.UpdateView):
         return reverse("tracker:goal-detail", kwargs={"pk": self.kwargs["pk"]})
 
 
-@login_required
-def goal_toggle_status(request, pk):
-    goal = get_object_or_404(Goal, pk=pk)
-    if goal.status == "active":
-        goal.status = "completed"
-    else:
-        goal.status = "active"
-    goal.save()
-    return HttpResponseRedirect(reverse_lazy("tracker:goal-detail", args=[pk]))
+class GoalToggleStatusView(View):
+    def get(self, request, pk):
+        goal = get_object_or_404(Goal, pk=pk)
+        if goal.status == "active":
+            goal.status = "completed"
+        else:
+            goal.status = "active"
+        goal.save()
+        return HttpResponseRedirect(
+            reverse_lazy("tracker:goal-detail", args=[pk])
+        )
 
 
-@login_required
-def goal_toggle_status_abandoned(request, pk):
-    goal = get_object_or_404(Goal, pk=pk)
-    if goal.status == "abandoned":
-        goal.status = "active"
-    else:
-        goal.status = "abandoned"
-    goal.save()
-
-    return HttpResponseRedirect(reverse_lazy("tracker:goal-detail", args=[pk]))
+class GoalToggleAbandonedStatusView(View):
+    def get(self, request, pk):
+        goal = get_object_or_404(Goal, pk=pk)
+        if goal.status == "abandoned":
+            goal.status = "active"
+        else:
+            goal.status = "abandoned"
+        goal.save()
+        return HttpResponseRedirect(
+            reverse_lazy("tracker:goal-detail", args=[pk])
+        )
 
 
 class GoalCreateView(LoginRequiredMixin, generic.CreateView):
@@ -237,42 +239,37 @@ class GoalStageUpdateView(LoginRequiredMixin, generic.UpdateView):
         )
 
 
-@login_required
-def goal_stage_toggle_status(request, goal_id, pk) -> HttpResponseRedirect:
-    goal_stage = get_object_or_404(GoalStage, pk=pk)
-    if goal_stage.status == "active":
-        goal_stage.status = "completed"
-    else:
-        goal_stage.status = "active"
-    goal_stage.save()
-    return HttpResponseRedirect(
-        reverse_lazy(
-            "tracker:goal-detail",
-            args=[goal_id]
+class GoalToggleStageStatusView(View):
+    def get(self, request, goal_id, pk):
+        goal_stage = get_object_or_404(GoalStage, pk=pk)
+        if goal_stage.status == "active":
+            goal_stage.status = "completed"
+        else:
+            goal_stage.status = "active"
+        goal_stage.save()
+        return HttpResponseRedirect(
+            reverse_lazy(
+                "tracker:goal-detail",
+                args=[goal_id]
+            )
         )
-    )
 
 
-@login_required
-def goal_stage_toggle_status_abandoned(
-        request,
-        goal_id,
-        pk
-) -> HttpResponseRedirect:
+class GoalToggleStageAbandonedStatusView(View):
+    def get(self, request, goal_id, pk):
+        goal_stage = get_object_or_404(GoalStage, pk=pk)
+        if goal_stage.status == "abandoned":
+            goal_stage.status = "active"
+        else:
+            goal_stage.status = "abandoned"
+        goal_stage.save()
 
-    goal_stage = get_object_or_404(GoalStage, pk=pk)
-    if goal_stage.status == "abandoned":
-        goal_stage.status = "active"
-    else:
-        goal_stage.status = "abandoned"
-    goal_stage.save()
-
-    return HttpResponseRedirect(
-        reverse_lazy(
-            "tracker:goal-detail",
-            args=[goal_id]
+        return HttpResponseRedirect(
+            reverse_lazy(
+                "tracker:goal-detail",
+                args=[goal_id]
+            )
         )
-    )
 
 
 class HabitListView(LoginRequiredMixin, generic.ListView):
