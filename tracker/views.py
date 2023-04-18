@@ -152,10 +152,7 @@ class GoalUpdateView(LoginRequiredMixin, generic.UpdateView):
 class GoalToggleStatusView(View):
     def get(self, request, pk):
         goal = get_object_or_404(Goal, pk=pk)
-        if goal.status == "active":
-            goal.status = "completed"
-        else:
-            goal.status = "active"
+        goal.status = "completed" if goal.status == "active" else "active"
         goal.save()
         return HttpResponseRedirect(
             reverse_lazy("tracker:goal-detail", args=[pk])
@@ -165,10 +162,7 @@ class GoalToggleStatusView(View):
 class GoalToggleAbandonedStatusView(View):
     def get(self, request, pk):
         goal = get_object_or_404(Goal, pk=pk)
-        if goal.status == "abandoned":
-            goal.status = "active"
-        else:
-            goal.status = "abandoned"
+        goal.status = "active" if goal.status == "abandoned" else "abandoned"
         goal.save()
         return HttpResponseRedirect(
             reverse_lazy("tracker:goal-detail", args=[pk])
@@ -242,10 +236,9 @@ class GoalStageUpdateView(LoginRequiredMixin, generic.UpdateView):
 class GoalToggleStageStatusView(View):
     def get(self, request, goal_id, pk):
         goal_stage = get_object_or_404(GoalStage, pk=pk)
-        if goal_stage.status == "active":
-            goal_stage.status = "completed"
-        else:
-            goal_stage.status = "active"
+        complete = "completed"
+        active = "active"
+        goal_stage.status = complete if goal_stage.status == active else active
         goal_stage.save()
         return HttpResponseRedirect(
             reverse_lazy(
@@ -258,10 +251,9 @@ class GoalToggleStageStatusView(View):
 class GoalToggleStageAbandonedStatusView(View):
     def get(self, request, goal_id, pk):
         goal_stage = get_object_or_404(GoalStage, pk=pk)
-        if goal_stage.status == "abandoned":
-            goal_stage.status = "active"
-        else:
-            goal_stage.status = "abandoned"
+        abandon = "abandoned"
+        active = "active"
+        goal_stage.status = active if goal_stage.status == abandon else abandon
         goal_stage.save()
 
         return HttpResponseRedirect(
