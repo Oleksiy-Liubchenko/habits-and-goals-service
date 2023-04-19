@@ -95,43 +95,13 @@ class GoalListView(LoginRequiredMixin, generic.ListView):
                 user=user
             )
 
-        return queryset.filter(user=user)
+        status = self.request.GET.get("status")
 
+        queryset = queryset.filter(user=user)
 
-class GoalActiveListView(LoginRequiredMixin, generic.ListView):
-    model = Goal
-    template_name = "goal/goal_list_active.html"
-    context_object_name = "goal_list_active"
-    paginate_by = 5
-    queryset = Goal.objects.filter(status="active")
-
-    def get_queryset(self):
-        user = self.request.user
-        return Goal.objects.filter(user=user, status="active")
-
-
-class GoalCompletedListView(LoginRequiredMixin, generic.ListView):
-    model = Goal
-    template_name = "goal/goal_list_completed.html"
-    context_object_name = "goal_list_completed"
-    paginate_by = 5
-    queryset = Goal.objects.filter(status="completed")
-
-    def get_queryset(self):
-        user = self.request.user
-        return Goal.objects.filter(user=user, status="completed")
-
-
-class GoalAbandonedListView(LoginRequiredMixin, generic.ListView):
-    model = Goal
-    template_name = "goal/goal_list_abandoned.html"
-    context_object_name = "goal_list_abandoned"
-    paginate_by = 5
-    queryset = Goal.objects.filter(status="abandoned")
-
-    def get_queryset(self):
-        user = self.request.user
-        return Goal.objects.filter(user=user, status="abandoned")
+        if status in ["completed", "abandoned", "active"]:
+            queryset = queryset.filter(status=status)
+        return queryset
 
 
 class GoalDeleteView(LoginRequiredMixin, generic.DeleteView):

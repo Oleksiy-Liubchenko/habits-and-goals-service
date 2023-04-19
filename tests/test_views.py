@@ -17,23 +17,14 @@ from tracker.models import (
 
 
 GOAL_URL = reverse("tracker:goal-list")
-GOAL_ACTIVE_URL = reverse("tracker:goal-list-active")
-GOAL_COMPLETED_URL = reverse("tracker:goal-list-completed")
-GOAL_ABANDONED_URL = reverse("tracker:goal-list-abandoned")
 HABIT_URL = reverse("tracker:habit-list")
 
 
 class PublicGoalListViews(TestCase):
     def test_login_required(self):
         res = self.client.get(GOAL_URL)
-        res_active = self.client.get(GOAL_ACTIVE_URL)
-        res_completed = self.client.get(GOAL_COMPLETED_URL)
-        res_abandon = self.client.get(GOAL_ABANDONED_URL)
 
         self.assertNotEqual(res.status_code, 200)
-        self.assertNotEqual(res_active.status_code, 200)
-        self.assertNotEqual(res_completed.status_code, 200)
-        self.assertNotEqual(res_abandon.status_code, 200)
 
 
 class PrivateGoalListViews(TestCase):
@@ -57,27 +48,14 @@ class PrivateGoalListViews(TestCase):
         goal = Goal.objects.all()
 
         response = self.client.get(GOAL_URL)
-        response_active = self.client.get(GOAL_ACTIVE_URL)
-        response_completed = self.client.get(GOAL_COMPLETED_URL)
-        response_abandoned = self.client.get(GOAL_ABANDONED_URL)
 
         self.assertEqual(response.status_code, 200)
-        self.assertEqual(response_active.status_code, 200)
-        self.assertEqual(response_completed.status_code, 200)
-        self.assertEqual(response_abandoned.status_code, 200)
 
         self.assertEqual(
             list(response.context["goal_list"]),
             list(goal)
         )
         self.assertTemplateUsed(response, "goal/goal_list.html")
-        self.assertTemplateUsed(response_active, "goal/goal_list_active.html")
-        self.assertTemplateUsed(
-            response_completed, "goal/goal_list_completed.html"
-        )
-        self.assertTemplateUsed(
-            response_abandoned, "goal/goal_list_abandoned.html"
-        )
 
     def test_context_data_goal(self):
         response = self.client.get(

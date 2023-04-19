@@ -15,19 +15,22 @@
     </div>
   </div>
 </form>
-
-  <div class="mb-5">
-    <h3>View goals by status:</h3>
-
-    <ul class="list-unstyled">
-      <li><a href="{% url "tracker:goal-list-active" %}" class="text-decoration-none">Active goals</a></li>
-      <li><a href="{% url "tracker:goal-list-completed" %}" class="text-decoration-none">Completed goals</a></li>
-      <li><a href="{% url "tracker:goal-list-abandoned" %}" class="text-decoration-none">Abandoned goals</a></li>
-    </ul>
-  </div>
+    <br>
 
   <a href="{% url 'tracker:goal-create' %}" class="btn btn-primary mb-3">Create a new goal</a>
   </div>
+    <form method="get" class="d-flex align-items-center" style="width: 15%; margin-left: 1%">
+      <label for="status" class="me-3">Status:</label>
+      <select name="status" id="status" class="form-select me-3">
+        <option value="">All</option>
+        <option value="active" {% if request.GET.status == "active" %}selected{% endif %}>Active</option>
+        <option value="completed" {% if request.GET.status == "completed" %}selected{% endif %}>Completed</option>
+        <option value="abandoned" {% if request.GET.status == "abandoned" %}selected{% endif %}>Abandoned</option>
+      </select>
+      <button type="submit" class="btn btn-primary">Filter</button>
+     </form>
+  <br>
+
   {% if goal_list %}
     <ul class="list-unstyled">
       {% for goal in goal_list %}

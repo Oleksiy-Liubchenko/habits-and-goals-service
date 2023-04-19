@@ -13,9 +13,6 @@ from tracker.views import (
     GoalUpdateView,
     GoalStageUpdateView,
     GoalStageDeleteView,
-    GoalActiveListView,
-    GoalCompletedListView,
-    GoalAbandonedListView,
     HabitDeleteView,
     HabitUpdateView,
     IndexView,
@@ -38,21 +35,6 @@ urlpatterns = [
         "goals/",
         GoalListView.as_view(),
         name="goal-list"
-    ),
-    path(
-        "goals/active/",
-        GoalActiveListView.as_view(),
-        name="goal-list-active"
-    ),
-    path(
-        "goals/completed/",
-        GoalCompletedListView.as_view(),
-        name="goal-list-completed"
-    ),
-    path(
-        "goals/abandoned/",
-        GoalAbandonedListView.as_view(),
-        name="goal-list-abandoned"
     ),
     path(
         "goals/create/",
