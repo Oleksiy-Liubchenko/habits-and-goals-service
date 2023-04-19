@@ -38,6 +38,9 @@ class IndexView(LoginRequiredMixin, View):
         ).count()
         total_goals_number = Goal.objects.filter(user=user).count()
 
+        if total_goals_number == 0:
+            total_goals_number = float("inf")
+
         active_goals_percent = round(
             active_goals_number / total_goals_number * 100, 1
         )
