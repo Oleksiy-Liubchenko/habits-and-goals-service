@@ -12,7 +12,7 @@ from tracker.forms import (
     GoalCommentaryForm,
     HabitCreationForm,
     HabitCommentaryForm,
-    HabitDayCompletionForm,
+    # HabitDayCompletionForm,
     GoalNameSearchForm,
     HabitNameSearchForm,
 )
@@ -305,21 +305,16 @@ class HabitDetailView(LoginRequiredMixin, generic.DetailView):
         context = super().get_context_data(**kwargs)
         context["commentary_form"] = HabitCommentaryForm()
         context["habit_commentaries"] = self.object.commentaries.all()
-        context["day_completion_form"] = HabitDayCompletionForm()
         total_days = (date.today() - self.object.created_at.date()).days
         context["total_days"] = total_days + 1
-        context["completed_days"] = self.object.habit_completions.filter(
-            status="completed"
-        ).count()
 
-        status = self.object.habit_completions
-        context["completion_status_today"] = status.filter(
-            complete_date=date.today()
-        ).first()
+        context["completed_days"] = [
+            value for key, value in self.object.completion_status.items()
+        ].count("Completed")
 
-        context["not_completed_days"] = self.object.habit_completions.filter(
-            status="not_completed"
-        ).count()
+        context["not_completed_days"] = [
+            value for key, value in self.object.completion_status.items()
+        ].count("Not completed")
 
         context["ignored_days"] = (
             context["total_days"]
@@ -327,25 +322,21 @@ class HabitDetailView(LoginRequiredMixin, generic.DetailView):
                + context["not_completed_days"])
         )
 
-        context["update_completion_form"] = HabitDayCompletionForm(
-            instance=context["completion_status_today"]
-        ) if context["completion_status_today"] else None
-
         context["progress_percent"] = round(
             100 * (context["completed_days"] / context["total_days"]), 2
         ) if context["total_days"] else 0
+
+        context["today_date"] = f"{date.today()}"
 
         return context
 
     def post(self, request, *args, **kwargs):
         habit = self.get_object()
-        form = HabitDayCompletionForm(request.POST)
-        if form.is_valid():
-            completion = form.save(commit=False)
-            completion.user = request.user
-            completion.habit = habit
-            completion.complete_date = date.today()
-            completion.save()
+        if "complete_habit" in request.POST:
+            habit.completion_status[f"{date.today()}"] = "Completed"
+        elif "not_complete_habit" in request.POST:
+            habit.completion_status[f"{date.today()}"] = "Not completed"
+        habit.save()
         return redirect("tracker:habit-detail", pk=habit.pk)
 
 
