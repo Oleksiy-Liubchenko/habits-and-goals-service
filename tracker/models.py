@@ -70,34 +70,10 @@ class Habit(models.Model):
     description = models.TextField(blank=True, null=True)
     month_goal = models.TextField(blank=True, null=True)
     created_at = models.DateTimeField(auto_now_add=True)
+    completion_status = models.JSONField(default=dict)
 
     def __str__(self) -> str:
         return self.name
-
-
-class HabitDayCompletion(models.Model):
-    STATUS_CHOICE = [
-        ("completed", "Competed"),
-        ("not_completed", "Not Competed")
-    ]
-
-    user = models.ForeignKey(
-        User,
-        on_delete=models.CASCADE,
-        related_name="habit_completions"
-    )
-    habit = models.ForeignKey(
-        Habit,
-        on_delete=models.CASCADE,
-        related_name="habit_completions"
-    )
-
-    complete_date = models.DateField()
-    status = models.CharField(
-        max_length=13,
-        choices=STATUS_CHOICE,
-        default="not_completed"
-    )
 
 
 class Commentary(models.Model):
