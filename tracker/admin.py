@@ -1,8 +1,7 @@
 from django.contrib import admin
-from tracker.models import Habit, Goal, User, GoalStage
 from django.contrib.auth.admin import UserAdmin
-# SuperUser login - test_user
-# SuperUser pass - 12345678
+
+from tracker.models import Habit, Goal, User, GoalStage
 
 
 class GoalStageInline(admin.TabularInline):

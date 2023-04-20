@@ -1,19 +1,18 @@
+import datetime
+
 from django.contrib.auth import get_user_model
 from django.test import TestCase, RequestFactory, Client
 from django.urls import reverse
 from django.utils import timezone
-import datetime
 
 from tracker.forms import GoalNameSearchForm, HabitNameSearchForm
-from tracker.views import GoalListView, HabitListView
-
 from tracker.models import (
     Goal,
     GoalStage,
     Habit,
     Commentary,
     User)
-
+from tracker.views import GoalListView, HabitListView
 
 GOAL_URL = reverse("tracker:goal-list")
 HABIT_URL = reverse("tracker:habit-list")
@@ -321,7 +320,6 @@ class HabitDetailViewTestCase(TestCase):
         )
 
     def test_habit_view_requires_login(self):
-
         response = self.client.get(self.url)
         self.assertRedirects(
             response,

@@ -12,7 +12,6 @@ from tracker.forms import (
     GoalCommentaryForm,
     HabitCreationForm,
     HabitCommentaryForm,
-    # HabitDayCompletionForm,
     GoalNameSearchForm,
     HabitNameSearchForm,
 )
@@ -317,9 +316,9 @@ class HabitDetailView(LoginRequiredMixin, generic.DetailView):
         ].count("Not completed")
 
         context["ignored_days"] = (
-            context["total_days"]
-            - (context["completed_days"]
-               + context["not_completed_days"])
+                context["total_days"]
+                - (context["completed_days"]
+                   + context["not_completed_days"])
         )
 
         context["progress_percent"] = round(

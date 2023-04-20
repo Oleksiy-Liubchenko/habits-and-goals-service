@@ -1,7 +1,9 @@
-from django.test import TestCase
-from django import forms
-from django.utils import timezone
 import datetime
+
+from django import forms
+from django.test import TestCase
+from django.utils import timezone
+
 from tracker.forms import (
     GoalNameSearchForm,
     GoalCreationForm,
@@ -10,7 +12,6 @@ from tracker.forms import (
     HabitNameSearchForm,
     HabitCreationForm,
     HabitCommentaryForm,
-    HabitDayCompletionForm
 )
 
 
@@ -37,7 +38,6 @@ class FormsTest(TestCase):
         self.assertTrue(form.is_valid())
 
     def test_goal_creation_form_without_deadline(self):
-
         data = {
             "name": "Test_name",
             "description": "Test_description",
@@ -98,14 +98,4 @@ class FormsTest(TestCase):
     def test_habit_commentary_form_blank_text(self):
         data = {"text": ""}
         form = HabitCommentaryForm(data=data)
-        self.assertFalse(form.is_valid())
-
-    def test_habit_day_completion_form_is_valid(self):
-        data = {"status": "completed"}
-        form = HabitDayCompletionForm(data=data)
-        self.assertTrue(form.is_valid())
-
-    def test_habit_day_completion_form_blank_status(self):
-        data = {"status": ""}
-        form = HabitDayCompletionForm(data=data)
         self.assertFalse(form.is_valid())

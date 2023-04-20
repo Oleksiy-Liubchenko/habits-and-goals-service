@@ -1,4 +1,5 @@
 from django.urls import path
+
 from tracker.views import (
     GoalListView,
     GoalCreateView,
@@ -21,7 +22,6 @@ from tracker.views import (
     GoalToggleStageStatusView,
     GoalToggleStageAbandonedStatusView
 )
-
 
 app_name = "tracker"
 

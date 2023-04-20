@@ -1,5 +1,6 @@
 from django import forms
 from django.forms.widgets import DateInput
+
 from tracker.models import (
     Goal,
     GoalStage,
