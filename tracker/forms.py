@@ -5,7 +5,6 @@ from tracker.models import (
     GoalStage,
     Commentary,
     Habit,
-    HabitDayCompletion,
 )
 
 
@@ -68,13 +67,4 @@ class HabitCommentaryForm(forms.ModelForm):
             "text": forms.Textarea(
                 attrs={"cols": 40, "rows": 2, "class": "commentary-form"}
             ),
-        }
-
-
-class HabitDayCompletionForm(forms.ModelForm):
-    class Meta:
-        model = HabitDayCompletion
-        fields = ["status"]
-        widgets = {
-            "status": forms.RadioSelect(),
         }

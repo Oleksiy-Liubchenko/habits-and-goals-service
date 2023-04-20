@@ -11,7 +11,6 @@ from tracker.models import (
     Goal,
     GoalStage,
     Habit,
-    HabitDayCompletion,
     Commentary,
     User)
 
@@ -334,19 +333,6 @@ class HabitDetailViewTestCase(TestCase):
         response = self.client.get(self.url)
         self.assertContains(response, "Test Habit")
         self.assertContains(response, "This is a test habit")
-
-    def test_view_allows_user_view_completion_submission(self):
-        self.client.login(username="Test_user", password="Test_pass")
-        data = {"status": "completed"}
-        response = self.client.post(self.url, data)
-
-        self.assertRedirects(response, self.url)
-        self.assertEqual(
-            HabitDayCompletion.objects.filter(
-                user=self.user, habit=self.habit, status="completed"
-            ).count(),
-            1
-        )
 
 
 class IndexViewTestCase(TestCase):
