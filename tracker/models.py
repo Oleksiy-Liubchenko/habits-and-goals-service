@@ -70,10 +70,22 @@ class Habit(models.Model):
     description = models.TextField(blank=True, null=True)
     month_goal = models.TextField(blank=True, null=True)
     created_at = models.DateTimeField(auto_now_add=True)
-    completion_status = models.JSONField(default=dict)
 
     def __str__(self) -> str:
         return self.name
+
+
+class HabitLog(models.Model):
+    habit = models.ForeignKey(
+        Habit,
+        on_delete=models.CASCADE,
+        related_name="logs"
+    )
+    completed = models.BooleanField()
+    created_at = models.DateTimeField(auto_now_add=True)
+
+    def __str__(self):
+        return f"{self.created_at.date()}"
 
 
 class Commentary(models.Model):
