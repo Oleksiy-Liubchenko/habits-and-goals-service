@@ -126,4 +126,9 @@ urlpatterns = [
         CommentaryHabitCreateView.as_view(),
         name="habit-commentary-create"
     ),
+    path(
+        "habits/<int:pk>/create/log/",
+        CommentaryHabitCreateView.as_view(),
+        name="habit-commentary-create"
+    ),
 ]

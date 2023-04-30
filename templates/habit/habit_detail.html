@@ -7,10 +7,10 @@
     <div class="card-body">
       <div class="d-flex align-items-center mb-3">
         <h1 class="mr-3">{{ habit.name }}</h1>
-        <a href="{% url 'tracker:habit-update' pk=habit.id %}" class="btn btn-outline-secondary btn-sm mr-2">
+        <a href="{% url "tracker:habit-update" pk=habit.id %}" class="btn btn-outline-secondary btn-sm mr-2">
           ✏️ Edit
         </a>
-        <a href="{% url 'tracker:habit-delete' pk=habit.id %}" class="btn btn-outline-danger btn-sm">
+        <a href="{% url "tracker:habit-delete" pk=habit.id %}" class="btn btn-outline-danger btn-sm">
           🗑️ Delete
         </a>
       </div>
@@ -26,15 +26,15 @@
   </div>
 
 
-  {% if today_date not in habit.completion_status %}
+  {% if today_date not in filled_dates %}
 
     <div class="card mt-5">
       <div class="card-body">
         <h5 class="card-title">Have you completed the habit today?</h5>
-        <form method="post" action="{% url 'tracker:habit-detail' pk=habit.pk %}">
+        <form method="POST" action="{% url "tracker:habit-detail" pk=habit.pk %}">
           {% csrf_token %}
-          <button type="submit" name="complete_habit" class="btn btn-success">Yes</button>
-          <button type="submit" name="not_complete_habit" class="btn btn-danger">No</button>
+          {{ habit_log_form.as_p }}
+          <input type="submit" value="Submit" class="btn btn-primary">
         </form>
       </div>
     </div>
@@ -61,7 +61,7 @@
             </tr>
             <tr>
               <td>Days completed</td>
-              <td>{{ completed_days }}</td>
+              <td>{{ completed_days_log }}</td>
             </tr>
             <tr>
               <td>Days ignored</td>
@@ -69,7 +69,7 @@
             </tr>
             <tr>
               <td>Days passed</td>
-              <td>{{ not_completed_days }}</td>
+              <td>{{ not_completed_days_log }}</td>
             </tr>
             <tr>
               <td>Focus %</td>
@@ -88,30 +88,23 @@
         <br>
 
         <ul>
-          {% for date, value in habit.completion_status.items %}
-            <li>
-              {{ date }} - {{ value }}
-            </li>
-            {% if forloop.last and value == "Not completed" %}
-              <br>
-              <form method="post" action="{% url 'tracker:habit-detail' pk=habit.pk %}">
-                {% csrf_token %}
-                <button type="submit" name="complete_habit" class="btn btn-secondary">UPD: done</button>
-              </form>
-            {% elif forloop.last and value == "Completed" %}
-              <br>
-              <form method="post" action="{% url 'tracker:habit-detail' pk=habit.pk %}">
-                {% csrf_token %}
-                <button type="submit" name="not_complete_habit" class="btn btn-danger">UPD: not done</button>
-              </form>
+          {% for log in habit.logs.all %}
+            {% if log.completed %}
+              <li>{{ log }} - ✔️</li>
+            {% else %}
+              <li>{{ log }} - ❌</li>
+
             {% endif %}
+          {% empty %}
+            <li>No logs for this habit.</li>
           {% endfor %}
+
         </ul>
 
       </div>
       <div class="col-md-6">
         <h3>Leave a Comment</h3>
-        <form method="POST" action="{% url 'tracker:habit-commentary-create' pk=habit.pk %}" class="form">
+        <form method="POST" action="{% url "tracker:habit-commentary-create" pk=habit.pk %}" class="form">
           {% csrf_token %}
           <div class="form-group">
             {{ commentary_form.text|as_crispy_field }}

@@ -1,11 +1,12 @@
 from django import forms
 from django.forms.widgets import DateInput
+from django.utils import timezone
 
 from tracker.models import (
     Goal,
     GoalStage,
     Commentary,
-    Habit,
+    Habit, HabitLog,
 )
 
 
@@ -69,3 +70,16 @@ class HabitCommentaryForm(forms.ModelForm):
                 attrs={"cols": 40, "rows": 2, "class": "commentary-form"}
             ),
         }
+
+
+class HabitLogForm(forms.ModelForm):
+    CHOICES = [(True, "Completed"), (False, "Not Completed")]
+    completed = forms.ChoiceField(choices=CHOICES, widget=forms.RadioSelect)
+    completed_at = forms.DateField(
+        initial=timezone.now().date(),
+        widget=forms.HiddenInput()
+    )
+
+    class Meta:
+        model = HabitLog
+        fields = ["completed", "completed_at"]

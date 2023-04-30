@@ -13,7 +13,7 @@ from tracker.forms import (
     HabitCreationForm,
     HabitCommentaryForm,
     GoalNameSearchForm,
-    HabitNameSearchForm,
+    HabitNameSearchForm, HabitLogForm,
 )
 from tracker.models import (
     Goal,
@@ -296,35 +296,39 @@ class HabitDetailView(LoginRequiredMixin, generic.DetailView):
         total_days = (date.today() - self.object.created_at.date()).days
         context["total_days"] = total_days + 1
 
-        context["completed_days"] = [
-            value for key, value in self.object.completion_status.items()
-        ].count("Completed")
-
-        context["not_completed_days"] = [
-            value for key, value in self.object.completion_status.items()
-        ].count("Not completed")
+        context["completed_days_log"] = self.object.logs.filter(
+            completed="True"
+        ).count()
+        context["not_completed_days_log"] = self.object.logs.filter(
+            completed="False"
+        ).count()
 
         context["ignored_days"] = (
-                context["total_days"]
-                - (context["completed_days"]
-                   + context["not_completed_days"])
+            context["total_days"]
+            - (context["completed_days_log"]
+               + context["not_completed_days_log"])
         )
 
         context["progress_percent"] = round(
-            100 * (context["completed_days"] / context["total_days"]), 2
+            100 * (context["completed_days_log"] / context["total_days"]), 2
         ) if context["total_days"] else 0
 
         context["today_date"] = f"{date.today()}"
+        context["habit_log_form"] = HabitLogForm()
+
+        dates = self.object.logs.all().dates("created_at", "day")
+        context["filled_dates"] = [d.strftime("%Y-%m-%d") for d in dates]
 
         return context
 
     def post(self, request, *args, **kwargs):
         habit = self.get_object()
-        if "complete_habit" in request.POST:
-            habit.completion_status[f"{date.today()}"] = "Completed"
-        elif "not_complete_habit" in request.POST:
-            habit.completion_status[f"{date.today()}"] = "Not completed"
-        habit.save()
+        form = HabitLogForm(request.POST)
+        if form.is_valid():
+            log = form.save(commit=False)
+            log.habit = habit
+            log.save()
+
         return redirect("tracker:habit-detail", pk=habit.pk)
 
 
