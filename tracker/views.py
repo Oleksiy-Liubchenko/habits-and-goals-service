@@ -26,40 +26,29 @@ from tracker.models import (
 class IndexView(LoginRequiredMixin, View):
     def get(self, request):
         user = request.user
-        active_goals_number = Goal.objects.filter(
-            status="active", user=user
-        ).count()
-        completed_goals_number = Goal.objects.filter(
-            status="completed", user=user
-        ).count()
-        abandoned_goals_number = Goal.objects.filter(
-            status="abandoned", user=user
-        ).count()
-        total_goals_number = Goal.objects.filter(user=user).count()
+        queryset = Goal.objects.filter(user=user)
+        statuses = ["active", "completed", "abandoned"]
+        goals_number = {
+            f"{status}_goals_number": queryset.filter(status=status).count()
+            for status in statuses
+        }
+        total_goals_number = queryset.count()
 
         if total_goals_number == 0:
             total_goals_number = float("inf")
 
-        active_goals_percent = round(
-            active_goals_number / total_goals_number * 100, 1
-        )
-        completed_goals_percent = round(
-            completed_goals_number / total_goals_number * 100, 1
-        )
-        abandoned_goals_percent = round(
-            abandoned_goals_number / total_goals_number * 100, 1
-        )
+        goals_percent = {
+            f"{field_name.split('_number')[0]}_percent":
+                round(goal_number / total_goals_number * 100, 1)
+            for field_name, goal_number in goals_number.items()
+        }
 
-        habits_number = Habit.objects.filter(user=user).count()
         habits_objects = Habit.objects.filter(user=user)
+        habits_number = habits_objects.count()
 
         context = {
-            "active_goals_number": active_goals_number,
-            "completed_goals_number": completed_goals_number,
-            "abandoned_goals_number": abandoned_goals_number,
-            "active_goals_percent": active_goals_percent,
-            "completed_goals_percent": completed_goals_percent,
-            "abandoned_goals_percent": abandoned_goals_percent,
+            **goals_number,
+            **goals_percent,
             "habits_number": habits_number,
             "habits_objects": habits_objects,
             "total_goals_number": total_goals_number
