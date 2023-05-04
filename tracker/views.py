@@ -81,10 +81,7 @@ class GoalListView(LoginRequiredMixin, generic.ListView):
         queryset = super().get_queryset()
 
         if name:
-            return self.queryset.filter(
-                name__icontains=name,
-                user=user
-            )
+            queryset = queryset.filter(name__icontains=name)
 
         status = self.request.GET.get("status")
 

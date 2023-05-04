@@ -14,6 +14,12 @@
           </div>
         </div>
       </div>
+      {% if request.GET.status %}
+        <input type="hidden" name="status" value="{{ request.GET.status }}">
+      {% endif %}
+      {% if request.GET.query %}
+        <input type="hidden" name="query" value="{{ request.GET.query }}">
+      {% endif %}
     </form>
     <br>
 
