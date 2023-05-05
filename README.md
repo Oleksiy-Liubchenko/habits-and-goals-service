@@ -13,7 +13,7 @@ For convenience, a search by habit name and goal, respectively, has been added.
 You can create, update and delete goals, sub-goals and habits.
 ## Take a quick peek
 
-*Link on render
+https://habits-ang-goals-service.onrender.com/
 
 ## Installation
 
@@ -21,7 +21,7 @@ You can create, update and delete goals, sub-goals and habits.
 ```git
 git clone https://github.com/Oleksiy-Liubchenko/habits-and-goals-service.git
 ```
-2. Change directory to main project folder. Use this commang:
+2. Change directory to main project folder. Use this command:
 ```git
 cd students-task-manager
 ```
@@ -51,7 +51,7 @@ python manage.py runserver
 ```
 7. All is set, now you can use the site! Use this credentials to login:
   - Login: `test_uesr`
-  - Password: `12345678`
+  - Password: `test_uesr123`
 
 
 Inside the main folder, there is a file called .env_sample which contains an example 
