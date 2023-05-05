@@ -13,7 +13,10 @@ For convenience, a search by habit name and goal, respectively, has been added.
 You can create, update and delete goals, sub-goals and habits.
 ## Take a quick peek
 
-https://habits-ang-goals-service.onrender.com/
+[Site deployed to Render](https://habits-ang-goals-service.onrender.com/)
+
+- Login: `test_user`
+- Password: `test_user123`
 
 ## Installation
 
@@ -50,8 +53,8 @@ python manage.py migrate
 python manage.py runserver
 ```
 7. All is set, now you can use the site! Use this credentials to login:
-  - Login: `test_uesr`
-  - Password: `test_uesr123`
+  - Login: `12345678`
+  - Password: `12345678`
 
 
 Inside the main folder, there is a file called .env_sample which contains an example 
